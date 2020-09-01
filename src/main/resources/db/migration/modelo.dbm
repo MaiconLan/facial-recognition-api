@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.9.1-beta" last-position="0,0" last-zoom="1"
+	 default-schema="public" default-owner="postgres">
+<database name="Facial Recognition">
+</database>
+
+<schema name="public" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<table name="aluno">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1140" y="80"/>
+	<column name="id_aluno" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="matricula">
+		<type name="character varying" length="0"/>
+	</column>
+	<constraint name="id_aluno_pk" type="pk-constr" table="public.aluno">
+		<columns names="id_aluno" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="id_usuario" index="1"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="aluno_uq" index="2"/>
+		<object name="usuario_fk" index="1"/>
+	</customidxs>
+</table>
+
+<table name="usuario">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1440" y="280"/>
+	<column name="id_usuario" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="nome" not-null="true">
+		<type name="character varying" length="0"/>
+	</column>
+	<column name="usuario">
+		<type name="character varying" length="0"/>
+	</column>
+	<column name="senha">
+		<type name="character varying" length="0"/>
+	</column>
+	<constraint name="id_usuario_pk" type="pk-constr" table="public.usuario">
+		<columns names="id_usuario" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="professor">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="780" y="520"/>
+	<column name="id_professor" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<constraint name="id_professor_pk" type="pk-constr" table="public.professor">
+		<columns names="id_professor" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="id_usuario" index="0"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="professor_uq" index="2"/>
+		<object name="usuario_fk" index="1"/>
+	</customidxs>
+</table>
+
+<relationship name="professor_has_one_usuario" type="rel11"
+	 src-col-pattern="{sc}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#5ed42e"
+	 src-table="public.usuario"
+	 dst-table="public.professor"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="aluno_has_one_usuario" type="rel11"
+	 src-col-pattern="{sc}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#b6c1a5"
+	 src-table="public.usuario"
+	 dst-table="public.aluno"
+	 src-required="false" dst-required="false"/>
+
+<table name="aula">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="180" y="80"/>
+	<column name="id_aula" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="titulo">
+		<type name="text" length="0"/>
+	</column>
+	<column name="inicio" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="termino" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="id_aula_pk" type="pk-constr" table="public.aula">
+		<columns names="id_aula" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="id_turma" index="1"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="turma_fk" index="1"/>
+	</customidxs>
+</table>
+
+<table name="turma">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="140" y="440"/>
+	<column name="id_turma" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="materia" not-null="true">
+		<type name="character varying" length="0"/>
+	</column>
+	<column name="ano" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="periodo" not-null="true">
+		<type name="character varying" length="0"/>
+	</column>
+	<column name="tipo">
+		<type name="character varying" length="0"/>
+	</column>
+	<column name="finalizada">
+		<type name="boolean" length="0"/>
+	</column>
+	<constraint name="id_turma_pk" type="pk-constr" table="public.turma">
+		<columns names="id_turma" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="tipo_turma_check" type="ck-constr" table="public.turma">
+			<expression><![CDATA[tipo IN ('Semestral', 'Bimestral', 'Trimestral', 'Anual')]]></expression>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="id_professor" index="1"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="professor_fk" index="2"/>
+	</customidxs>
+</table>
+
+<relationship name="professor_has_many_turma" type="rel1n"
+	 src-col-pattern="{sc}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#9fe72e"
+	 src-table="public.professor"
+	 dst-table="public.turma"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="turma_has_many_aula" type="rel1n"
+	 src-col-pattern="{sc}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#6d3000"
+	 src-table="public.turma"
+	 dst-table="public.aula"
+	 src-required="false" dst-required="false"/>
+
+<table name="coordenador">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1440" y="520"/>
+	<column name="id_coordenador" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<constraint name="id_cordenador_pk" type="pk-constr" table="public.coordenador">
+		<columns names="id_coordenador" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="coordenador_has_one_usuario" type="rel11"
+	 src-col-pattern="{sc}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#5ef782"
+	 src-table="public.usuario"
+	 dst-table="public.coordenador"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="many_aluno_has_many_turma" type="relnn"
+	 src-col-pattern="{sc}" dst-col-pattern="{sc}"
+	 pk-pattern="{gt}_pk" uq-pattern="{gt}_uq"
+	 src-fk-pattern="{st}_fk" dst-fk-pattern="{dt}_fk"
+	 pk-col-pattern="id"
+	 custom-color="#d3d590"
+	 src-table="public.aluno"
+	 dst-table="public.turma"
+	 src-required="false" dst-required="false"
+	 table-name="turma_aluno"/>
+
+<table name="presenca">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="640" y="80"/>
+	<column name="id_presenca" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="presenca">
+		<type name="boolean" length="0"/>
+	</column>
+	<constraint name="id_presenca_pk" type="pk-constr" table="public.presenca">
+		<columns names="id_presenca" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="id_aluno" index="1"/>
+		<object name="id_aula" index="2"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="aluno_fk" index="1"/>
+		<object name="aula_fk" index="2"/>
+	</customidxs>
+</table>
+
+<relationship name="aluno_has_many_presenca" type="rel1n"
+	 src-col-pattern="{sc}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#371669"
+	 src-table="public.aluno"
+	 dst-table="public.presenca"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="aula_has_many_presenca" type="rel1n"
+	 src-col-pattern="{sc}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#78924b"
+	 src-table="public.aula"
+	 dst-table="public.presenca"
+	 src-required="false" dst-required="false"/>
+
+</dbmodel>
