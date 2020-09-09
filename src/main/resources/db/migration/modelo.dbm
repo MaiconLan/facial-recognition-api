@@ -45,6 +45,9 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="nome" not-null="true">
 		<type name="character varying" length="0"/>
 	</column>
+	<column name="email">
+		<type name="character varying" length="0"/>
+	</column>
 	<column name="usuario">
 		<type name="character varying" length="0"/>
 	</column>

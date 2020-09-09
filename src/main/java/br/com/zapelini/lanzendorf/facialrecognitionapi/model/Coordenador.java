@@ -4,23 +4,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
 
 @Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "professor")
+@Table(name = "coordenador")
 @PrimaryKeyJoinColumn(name = "idUsuario")
-public class Professor extends Usuario {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_professor")
-    private Long idProfessor;
+public class Coordenador extends Usuario {
 
     @Override
     public String getTipo() {
-        return "Professor";
+        return "Coordenador";
     }
 }
