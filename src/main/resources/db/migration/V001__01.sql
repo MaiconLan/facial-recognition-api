@@ -32,6 +32,7 @@ ALTER TABLE public.aluno OWNER TO postgres;
 CREATE TABLE public.usuario(
 	id_usuario serial NOT NULL,
 	nome character varying NOT NULL,
+	email character varying,
 	usuario character varying,
 	senha character varying,
 	CONSTRAINT id_usuario_pk PRIMARY KEY (id_usuario)

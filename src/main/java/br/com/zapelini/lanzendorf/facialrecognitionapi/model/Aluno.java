@@ -1,6 +1,10 @@
 package br.com.zapelini.lanzendorf.facialrecognitionapi.model;
 
-import lombok.*;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.AlunoDTO;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -8,10 +12,8 @@ import javax.persistence.*;
 @Setter
 @Entity
 @Table(name = "aluno")
-@AllArgsConstructor
 @NoArgsConstructor
-@PrimaryKeyJoinColumn(name = "idUsuario")
-public class Aluno extends Usuario {
+public class Aluno {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,8 +22,12 @@ public class Aluno extends Usuario {
 
     private String matricula;
 
-    @Override
-    public String getTipo() {
-        return "Aluno";
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_usuario")
+    private Usuario usuario;
+
+    public Aluno(AlunoDTO alunoDTO) {
+        this.usuario = new Usuario(alunoDTO);
+        this.matricula = alunoDTO.getMatricula();
     }
 }

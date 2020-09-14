@@ -1,23 +1,21 @@
 package br.com.zapelini.lanzendorf.facialrecognitionapi.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Data
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "coordenador")
-@PrimaryKeyJoinColumn(name = "idUsuario")
-public class Coordenador extends Usuario {
+public class Coordenador {
 
-    @Override
-    public String getTipo() {
-        return "Coordenador";
-    }
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_coordenador")
+    private Long idCoordenador;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_usuario")
+    private Usuario usuario;
+
 }

@@ -1,5 +1,8 @@
 package br.com.zapelini.lanzendorf.facialrecognitionapi.model;
 
+import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.AlunoDTO;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.usuario.dto.UsuarioDTO;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.service.professor.dto.ProfessorDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,8 +14,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "usuario")
-@Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Usuario {
+public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +29,11 @@ public abstract class Usuario {
 
     private String senha;
 
-    public abstract String getTipo();
+    public Usuario(UsuarioDTO usuario) {
+        this.nome = usuario.getNome();
+        this.email = usuario.getEmail();
+        this.usuario = usuario.getUsuario();
+        this.senha = usuario.getSenha();
+    }
 
 }
