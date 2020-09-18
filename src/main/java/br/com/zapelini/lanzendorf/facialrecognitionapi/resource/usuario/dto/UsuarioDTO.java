@@ -7,7 +7,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 public class UsuarioDTO {
 
@@ -22,6 +21,14 @@ public class UsuarioDTO {
     private String senha;
 
     public UsuarioDTO(String nome, String email, String usuario, String senha) {
+        this.nome = nome;
+        this.email = email;
+        this.usuario = usuario;
+        this.senha = senha;
+    }
+
+    public UsuarioDTO(Long idUsuario, String nome, String email, String usuario, String senha) {
+        this.idUsuario = idUsuario;
         this.nome = nome;
         this.email = email;
         this.usuario = usuario;

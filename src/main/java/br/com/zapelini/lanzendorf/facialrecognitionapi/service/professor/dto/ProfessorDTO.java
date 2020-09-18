@@ -12,7 +12,7 @@ import lombok.Setter;
 public class ProfessorDTO extends UsuarioDTO {
 
     public ProfessorDTO(Professor professor) {
-        super(professor.getUsuario().getNome(), professor.getUsuario().getEmail(), professor.getUsuario().getUsuario(), null);
+        super(professor.getUsuario().getIdUsuario(), professor.getUsuario().getNome(), professor.getUsuario().getEmail(), professor.getUsuario().getUsuario(), null);
     }
 
     public ProfessorDTO(String nome, String email, String usuario, String senha) {
