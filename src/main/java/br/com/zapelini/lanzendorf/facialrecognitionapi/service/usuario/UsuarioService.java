@@ -1,5 +1,6 @@
 package br.com.zapelini.lanzendorf.facialrecognitionapi.service.usuario;
 
+import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.ApiException;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Usuario;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.repository.usuario.UsuarioRepository;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.usuario.dto.UsuarioDTO;
@@ -17,7 +18,13 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public Usuario saveUsuario(UsuarioDTO usuarioDTO, Usuario usuario) throws NoSuchAlgorithmException {
+    public Usuario saveUsuario(UsuarioDTO usuarioDTO, Usuario usuario) throws NoSuchAlgorithmException, ApiException {
+        if(usuarioRepository.existsByUsuario(usuarioDTO.getUsuario()))
+            throw new ApiException("Este nome de usuário já está em uso!");
+
+        if(usuarioRepository.existsByEmail(usuarioDTO.getEmail()))
+            throw new ApiException("Este e-mail já está em uso!");
+
         usuario.setNome(usuarioDTO.getNome());
         usuario.setEmail(usuarioDTO.getEmail());
         usuario.setUsuario(usuarioDTO.getUsuario());

@@ -17,7 +17,7 @@ public class AlunoDTO extends UsuarioDTO {
     }
 
     public AlunoDTO(Aluno aluno) {
-        super(aluno.getUsuario().getIdUsuario(), aluno.getUsuario().getNome(), aluno.getUsuario().getEmail(), aluno.getUsuario().getUsuario(), null);
+        super(aluno.getUsuario());
         this.matricula = aluno.getMatricula();
     }
 }

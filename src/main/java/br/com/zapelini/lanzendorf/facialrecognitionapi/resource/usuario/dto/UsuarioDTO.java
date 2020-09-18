@@ -1,5 +1,6 @@
 package br.com.zapelini.lanzendorf.facialrecognitionapi.resource.usuario.dto;
 
+import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Usuario;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,15 +21,13 @@ public class UsuarioDTO {
 
     private String senha;
 
-    public UsuarioDTO(String nome, String email, String usuario, String senha) {
-        this.nome = nome;
-        this.email = email;
-        this.usuario = usuario;
-        this.senha = senha;
+    public UsuarioDTO(Usuario usuario) {
+        this.nome = usuario.getNome();
+        this.email = usuario.getEmail();
+        this.usuario = usuario.getUsuario();
     }
 
-    public UsuarioDTO(Long idUsuario, String nome, String email, String usuario, String senha) {
-        this.idUsuario = idUsuario;
+    public UsuarioDTO(String nome, String email, String usuario, String senha) {
         this.nome = nome;
         this.email = email;
         this.usuario = usuario;

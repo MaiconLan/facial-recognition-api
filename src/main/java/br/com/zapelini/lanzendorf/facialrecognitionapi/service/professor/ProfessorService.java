@@ -23,7 +23,7 @@ public class ProfessorService {
     @Autowired
     private UsuarioService usuarioService;
 
-    public ProfessorDTO criarProfessor(ProfessorDTO professorDTO) throws NoSuchAlgorithmException {
+    public ProfessorDTO criarProfessor(ProfessorDTO professorDTO) throws NoSuchAlgorithmException, ApiException {
         Professor professor = new Professor(professorDTO);
 
         Usuario usuario = usuarioService.saveUsuario(professorDTO, professor.getUsuario());
@@ -47,7 +47,7 @@ public class ProfessorService {
     }
 
     public Professor getProfessor(Long idProfessor) throws ApiException {
-        return professorRepository.findById(idProfessor).orElseThrow(() -> new ApiException("Aluno não encontrado!"));
+        return professorRepository.findById(idProfessor).orElseThrow(() -> new ApiException("Professor não encontrado!"));
     }
 
     public ProfessorDTO getProfessorDTO(Long idProfessor) throws ApiException {
