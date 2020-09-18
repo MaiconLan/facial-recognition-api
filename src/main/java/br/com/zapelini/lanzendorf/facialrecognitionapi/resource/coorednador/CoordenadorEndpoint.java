@@ -1,6 +1,6 @@
 package br.com.zapelini.lanzendorf.facialrecognitionapi.resource.coorednador;
 
-import br.com.zapelini.lanzendorf.facialrecognitionapi.exception.ApiException;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.ApiException;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.coorednador.dto.CoordenadorDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.coordenador.CoordenadorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class CoordenadorEndpoint {
     private CoordenadorService coordenadorService;
 
     @PostMapping
-    public ResponseEntity<CoordenadorDTO> criarCoordenador(@RequestBody CoordenadorDTO coordenadorDTO) throws NoSuchAlgorithmException {
+    public ResponseEntity<CoordenadorDTO> criarCoordenador(@RequestBody CoordenadorDTO coordenadorDTO) throws NoSuchAlgorithmException, ApiException {
         return ResponseEntity.ok(coordenadorService.criarCoordenador(coordenadorDTO));
     }
 

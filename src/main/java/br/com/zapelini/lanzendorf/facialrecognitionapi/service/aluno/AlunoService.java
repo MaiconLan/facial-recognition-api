@@ -1,6 +1,6 @@
 package br.com.zapelini.lanzendorf.facialrecognitionapi.service.aluno;
 
-import br.com.zapelini.lanzendorf.facialrecognitionapi.exception.ApiException;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.ApiException;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Aluno;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Usuario;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.repository.aluno.AlunoRepository;
@@ -23,7 +23,7 @@ public class AlunoService {
     @Autowired
     private UsuarioService usuarioService;
 
-    public AlunoDTO criarAluno(AlunoDTO alunoDTO) throws NoSuchAlgorithmException {
+    public AlunoDTO criarAluno(AlunoDTO alunoDTO) throws NoSuchAlgorithmException, ApiException {
         Aluno aluno = new Aluno(alunoDTO);
 
         Usuario usuario = usuarioService.saveUsuario(alunoDTO, aluno.getUsuario());

@@ -1,6 +1,6 @@
 package br.com.zapelini.lanzendorf.facialrecognitionapi.service.coordenador;
 
-import br.com.zapelini.lanzendorf.facialrecognitionapi.exception.ApiException;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.ApiException;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Coordenador;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Usuario;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.repository.coordenador.CoordenadorRepository;
@@ -23,7 +23,7 @@ public class CoordenadorService {
     @Autowired
     private UsuarioService usuarioService;
     
-    public CoordenadorDTO criarCoordenador(CoordenadorDTO coordenadorDTO) throws NoSuchAlgorithmException {
+    public CoordenadorDTO criarCoordenador(CoordenadorDTO coordenadorDTO) throws NoSuchAlgorithmException, ApiException {
         Coordenador coordenador = new Coordenador(coordenadorDTO);
 
         Usuario usuario = usuarioService.saveUsuario(coordenadorDTO, coordenador.getUsuario());
@@ -33,7 +33,7 @@ public class CoordenadorService {
         return new CoordenadorDTO(coordenadorRepository.save(coordenador));
     }
 
-    public CoordenadorDTO atualizarCoordenador(Long idCoordenador, CoordenadorDTO coordenadorDTO) throws ApiException, NoSuchAlgorithmException {
+    public CoordenadorDTO atualizarCoordenador(Long idCoordenador, CoordenadorDTO coordenadorDTO) throws NoSuchAlgorithmException, ApiException {
         Coordenador coordenadorSaved = getCoordenador(idCoordenador);
         Coordenador coordenador = new Coordenador(coordenadorDTO);
 

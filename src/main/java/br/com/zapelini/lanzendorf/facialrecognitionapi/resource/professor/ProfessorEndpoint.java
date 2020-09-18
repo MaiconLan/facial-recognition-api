@@ -1,13 +1,12 @@
 package br.com.zapelini.lanzendorf.facialrecognitionapi.resource.professor;
 
-import br.com.zapelini.lanzendorf.facialrecognitionapi.exception.ApiException;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.ApiException;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.professor.ProfessorService;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.professor.dto.ProfessorDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
@@ -19,7 +18,7 @@ public class ProfessorEndpoint {
     private ProfessorService professorService;
 
     @PostMapping
-    public ResponseEntity<ProfessorDTO> criarProfessor(@RequestBody ProfessorDTO professorDTO) throws NoSuchAlgorithmException {
+    public ResponseEntity<ProfessorDTO> criarProfessor(@RequestBody ProfessorDTO professorDTO) throws NoSuchAlgorithmException, ApiException {
         return ResponseEntity.ok(professorService.criarProfessor(professorDTO));
     }
 

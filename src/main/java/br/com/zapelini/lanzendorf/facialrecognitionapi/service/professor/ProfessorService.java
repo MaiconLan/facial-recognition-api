@@ -1,6 +1,6 @@
 package br.com.zapelini.lanzendorf.facialrecognitionapi.service.professor;
 
-import br.com.zapelini.lanzendorf.facialrecognitionapi.exception.ApiException;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.ApiException;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Professor;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Usuario;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.repository.professor.ProfessorRepository;

@@ -1,6 +1,6 @@
 package br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno;
 
-import br.com.zapelini.lanzendorf.facialrecognitionapi.exception.ApiException;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.ApiException;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.AlunoDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.aluno.AlunoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class AlunoEndpoint {
     private AlunoService alunoService;
 
     @PostMapping
-    public ResponseEntity<AlunoDTO> criarAluno(@RequestBody AlunoDTO alunoDTO) throws NoSuchAlgorithmException {
+    public ResponseEntity<AlunoDTO> criarAluno(@RequestBody AlunoDTO alunoDTO) throws NoSuchAlgorithmException, ApiException {
         return ResponseEntity.ok(alunoService.criarAluno(alunoDTO));
     }
 
