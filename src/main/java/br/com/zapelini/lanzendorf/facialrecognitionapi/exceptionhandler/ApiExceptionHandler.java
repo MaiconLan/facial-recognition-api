@@ -1,7 +1,8 @@
 package br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler;
 
+import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.ApiException;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.RecursoInexistenteException;
-import org.apache.tomcat.util.ExceptionUtils;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -32,7 +33,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
                                                                   HttpHeaders headers, HttpStatus status, WebRequest request) {
-
         String mensagemUsuario = messageSource.getMessage("mensagem.invalida", null, LocaleContextHolder.getLocale());
         String mensagemDesenvolvedor = ex.getCause() != null ? ex.getCause().toString() : ex.toString();
         List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
@@ -42,7 +42,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers, HttpStatus status, WebRequest request) {
-
         List<Erro> erros = criarListaDeErros(ex.getBindingResult());
         return handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
     }
@@ -63,6 +62,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
+    @ExceptionHandler({ ApiException.class })
+    public ResponseEntity<Object> handleApiException(ApiException ex, WebRequest request) {
+        String mensagemUsuario = messageSource.getMessage("recurso.nao-encontrado", null, LocaleContextHolder.getLocale());
+        String mensagemDesenvolvedor = ex.toString();
+        List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
+        return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
     @ExceptionHandler({ DataIntegrityViolationException.class } )
     public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request) {
         String mensagemUsuario = messageSource.getMessage("recurso.operacao-nao-permitida", null, LocaleContextHolder.getLocale());
@@ -70,7 +77,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
         return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
-
 
     private List<Erro> criarListaDeErros(BindingResult bindingResult) {
         List<Erro> erros = new ArrayList<>();
@@ -84,6 +90,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return erros;
     }
 
+    @Getter
     public static class Erro {
 
         private String mensagemUsuario;
@@ -92,14 +99,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         public Erro(String mensagemUsuario, String mensagemDesenvolvedor) {
             this.mensagemUsuario = mensagemUsuario;
             this.mensagemDesenvolvedor = mensagemDesenvolvedor;
-        }
-
-        public String getMensagemUsuario() {
-            return mensagemUsuario;
-        }
-
-        public String getMensagemDesenvolvedor() {
-            return mensagemDesenvolvedor;
         }
 
     }

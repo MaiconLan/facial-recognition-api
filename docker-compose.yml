@@ -9,7 +9,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - /home/maicon/dev/postgres:/var/lib/postgresql/data 
+      - db-data:/var/lib/mysql/data
     networks:
       - postgres-network
 
@@ -29,3 +29,7 @@ services:
 networks: 
   postgres-network:
     driver: bridge
+
+volumes:
+  db-data:
+

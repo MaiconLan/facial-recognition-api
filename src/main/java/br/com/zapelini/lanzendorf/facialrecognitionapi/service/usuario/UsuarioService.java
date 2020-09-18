@@ -19,10 +19,10 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     public Usuario saveUsuario(UsuarioDTO usuarioDTO, Usuario usuario) throws NoSuchAlgorithmException, ApiException {
-        if(usuarioRepository.existsByUsuario(usuarioDTO.getUsuario()))
+        if(usuarioRepository.existsByUsuarioAndIdUsuarioNot(usuarioDTO.getUsuario(), usuario.getIdUsuario()))
             throw new ApiException("Este nome de usuário já está em uso!");
 
-        if(usuarioRepository.existsByEmail(usuarioDTO.getEmail()))
+        if(usuarioRepository.existsByEmailAndIdUsuarioNot(usuarioDTO.getEmail(), usuario.getIdUsuario()))
             throw new ApiException("Este e-mail já está em uso!");
 
         usuario.setNome(usuarioDTO.getNome());

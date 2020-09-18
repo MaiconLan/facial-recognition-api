@@ -38,5 +38,4 @@ public class AlunoEndpoint {
         return !alunos.isEmpty() ? ResponseEntity.ok(alunos) : ResponseEntity.noContent().build();
     }
 
-
 }
