@@ -201,4 +201,3 @@ REFERENCES public.aula (id_aula) MATCH FULL
 ON DELETE CASCADE ON UPDATE CASCADE;
 -- ddl-end --
 
-
