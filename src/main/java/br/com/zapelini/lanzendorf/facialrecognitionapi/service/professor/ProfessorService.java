@@ -4,7 +4,7 @@ import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exceptio
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Professor;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Usuario;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.repository.professor.ProfessorRepository;
-import br.com.zapelini.lanzendorf.facialrecognitionapi.service.professor.dto.ProfessorDTO;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.professor.dto.ProfessorDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.usuario.UsuarioService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

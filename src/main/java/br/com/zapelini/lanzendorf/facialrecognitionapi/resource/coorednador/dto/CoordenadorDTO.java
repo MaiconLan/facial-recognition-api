@@ -9,8 +9,11 @@ import lombok.Setter;
 @Setter
 public class CoordenadorDTO extends UsuarioDTO {
 
+    private Long idCoordenador;
+
     public CoordenadorDTO(Coordenador coordenador) {
         super(coordenador.getUsuario());
+        this.idCoordenador = coordenador.getIdCoordenador();
     }
 
     public CoordenadorDTO(String nome, String email, String usuario, String senha) {

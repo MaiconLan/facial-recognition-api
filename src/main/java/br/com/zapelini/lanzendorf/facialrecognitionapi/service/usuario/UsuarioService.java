@@ -19,17 +19,25 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     public Usuario saveUsuario(UsuarioDTO usuarioDTO, Usuario usuario) throws NoSuchAlgorithmException, ApiException {
-        if(usuarioRepository.existsByUsuarioAndIdUsuarioNot(usuarioDTO.getUsuario(), usuario.getIdUsuario()))
-            throw new ApiException("Este nome de usuário já está em uso!");
+        if (usuario.getIdUsuario() != null) {
+            if (usuarioRepository.existsByUsuarioAndIdUsuarioNot(usuarioDTO.getUsuario(), usuario.getIdUsuario()))
+                throw new ApiException("Este nome de usuário já está em uso!");
 
-        if(usuarioRepository.existsByEmailAndIdUsuarioNot(usuarioDTO.getEmail(), usuario.getIdUsuario()))
-            throw new ApiException("Este e-mail já está em uso!");
+            if (usuarioRepository.existsByEmailAndIdUsuarioNot(usuarioDTO.getEmail(), usuario.getIdUsuario()))
+                throw new ApiException("Este e-mail já está em uso!");
+        } else {
+            if (usuarioRepository.existsByUsuario(usuarioDTO.getUsuario()))
+                throw new ApiException("Este nome de usuário já está em uso!");
+
+            if (usuarioRepository.existsByEmail(usuarioDTO.getEmail()))
+                throw new ApiException("Este e-mail já está em uso!");
+        }
 
         usuario.setNome(usuarioDTO.getNome());
         usuario.setEmail(usuarioDTO.getEmail());
         usuario.setUsuario(usuarioDTO.getUsuario());
 
-        if(StringUtils.isEmpty(usuarioDTO.getSenha()))
+        if (StringUtils.isEmpty(usuarioDTO.getSenha()))
             return usuarioRepository.save(usuario);
 
         usuario.setSenha(criptofragar(usuarioDTO.getSenha()));

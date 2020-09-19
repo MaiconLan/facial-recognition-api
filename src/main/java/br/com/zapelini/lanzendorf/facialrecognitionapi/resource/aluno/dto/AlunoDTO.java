@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 public class AlunoDTO extends UsuarioDTO {
 
+    private Long idAluno;
     private String matricula;
 
     public AlunoDTO(String nome, String email, String usuario, String senha, String matricula) {
@@ -18,6 +19,7 @@ public class AlunoDTO extends UsuarioDTO {
 
     public AlunoDTO(Aluno aluno) {
         super(aluno.getUsuario());
+        this.idAluno = aluno.getIdAluno();
         this.matricula = aluno.getMatricula();
     }
 }
