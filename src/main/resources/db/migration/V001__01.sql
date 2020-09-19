@@ -58,7 +58,7 @@ ALTER TABLE public.professor OWNER TO postgres;
 -- ALTER TABLE public.professor DROP CONSTRAINT IF EXISTS usuario_fk CASCADE;
 ALTER TABLE public.professor ADD CONSTRAINT usuario_fk FOREIGN KEY (id_usuario)
 REFERENCES public.usuario (id_usuario) MATCH FULL
-ON DELETE SET NULL ON UPDATE CASCADE;
+ON DELETE CASCADE ON UPDATE CASCADE;
 -- ddl-end --
 
 -- object: professor_uq | type: CONSTRAINT --
@@ -70,7 +70,7 @@ ALTER TABLE public.professor ADD CONSTRAINT professor_uq UNIQUE (id_usuario);
 -- ALTER TABLE public.aluno DROP CONSTRAINT IF EXISTS usuario_fk CASCADE;
 ALTER TABLE public.aluno ADD CONSTRAINT usuario_fk FOREIGN KEY (id_usuario)
 REFERENCES public.usuario (id_usuario) MATCH FULL
-ON DELETE SET NULL ON UPDATE CASCADE;
+ON DELETE CASCADE ON UPDATE CASCADE;
 -- ddl-end --
 
 -- object: aluno_uq | type: CONSTRAINT --
@@ -115,14 +115,14 @@ ALTER TABLE public.turma OWNER TO postgres;
 -- ALTER TABLE public.turma DROP CONSTRAINT IF EXISTS professor_fk CASCADE;
 ALTER TABLE public.turma ADD CONSTRAINT professor_fk FOREIGN KEY (id_professor)
 REFERENCES public.professor (id_professor) MATCH FULL
-ON DELETE SET NULL ON UPDATE CASCADE;
+ON DELETE NO ACTION ON UPDATE CASCADE;
 -- ddl-end --
 
 -- object: turma_fk | type: CONSTRAINT --
 -- ALTER TABLE public.aula DROP CONSTRAINT IF EXISTS turma_fk CASCADE;
 ALTER TABLE public.aula ADD CONSTRAINT turma_fk FOREIGN KEY (id_turma)
 REFERENCES public.turma (id_turma) MATCH FULL
-ON DELETE SET NULL ON UPDATE CASCADE;
+ON DELETE CASCADE ON UPDATE CASCADE;
 -- ddl-end --
 
 -- object: public.coordenador | type: TABLE --
@@ -141,7 +141,7 @@ ALTER TABLE public.coordenador OWNER TO postgres;
 -- ALTER TABLE public.coordenador DROP CONSTRAINT IF EXISTS usuario_fk CASCADE;
 ALTER TABLE public.coordenador ADD CONSTRAINT usuario_fk FOREIGN KEY (id_usuario)
 REFERENCES public.usuario (id_usuario) MATCH FULL
-ON DELETE SET NULL ON UPDATE CASCADE;
+ON DELETE CASCADE ON UPDATE CASCADE;
 -- ddl-end --
 
 -- object: coordenador_uq | type: CONSTRAINT --
@@ -191,14 +191,14 @@ ALTER TABLE public.presenca OWNER TO postgres;
 -- ALTER TABLE public.presenca DROP CONSTRAINT IF EXISTS aluno_fk CASCADE;
 ALTER TABLE public.presenca ADD CONSTRAINT aluno_fk FOREIGN KEY (id_aluno)
 REFERENCES public.aluno (id_aluno) MATCH FULL
-ON DELETE SET NULL ON UPDATE CASCADE;
+ON DELETE CASCADE ON UPDATE CASCADE;
 -- ddl-end --
 
 -- object: aula_fk | type: CONSTRAINT --
 -- ALTER TABLE public.presenca DROP CONSTRAINT IF EXISTS aula_fk CASCADE;
 ALTER TABLE public.presenca ADD CONSTRAINT aula_fk FOREIGN KEY (id_aula)
 REFERENCES public.aula (id_aula) MATCH FULL
-ON DELETE SET NULL ON UPDATE CASCADE;
+ON DELETE CASCADE ON UPDATE CASCADE;
 -- ddl-end --
 
 
