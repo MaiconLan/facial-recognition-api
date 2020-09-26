@@ -55,7 +55,7 @@ public class AlunoService {
         return new AlunoDTO(aluno);
     }
 
-    public List<AlunoDTO> getAlunos() {
-        return alunoRepository.findAll().stream().map(AlunoDTO::new).collect(Collectors.toList());
+    public List<AlunoDTO> getAlunos(String nome, String email, String matricula) {
+        return alunoRepository.filter(nome, email, matricula).stream().map(AlunoDTO::new).collect(Collectors.toList());
     }
 }
