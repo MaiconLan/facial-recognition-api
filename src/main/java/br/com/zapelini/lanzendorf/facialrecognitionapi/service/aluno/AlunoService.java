@@ -8,6 +8,9 @@ import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.AlunoD
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.usuario.UsuarioService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
@@ -55,7 +58,15 @@ public class AlunoService {
         return new AlunoDTO(aluno);
     }
 
-    public List<AlunoDTO> getAlunos(String nome, String email, String matricula) {
-        return alunoRepository.filter(nome, email, matricula).stream().map(AlunoDTO::new).collect(Collectors.toList());
+    public Page<AlunoDTO> filtrar(Pageable pageable, String nome, String email, String matricula) {
+        List<AlunoDTO> alunos = alunoRepository.filter(pageable, nome, email, matricula)
+                .stream()
+                .map(AlunoDTO::new)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(alunos,
+                              pageable,
+                                alunos.size()
+        );
     }
 }
