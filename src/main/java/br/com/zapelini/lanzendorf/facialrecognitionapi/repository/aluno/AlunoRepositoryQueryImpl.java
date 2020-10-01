@@ -7,6 +7,7 @@ import org.springframework.util.StringUtils;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.math.BigInteger;
 import java.util.List;
 
 public class AlunoRepositoryQueryImpl implements AlunoRepositoryQuery {
@@ -19,7 +20,7 @@ public class AlunoRepositoryQueryImpl implements AlunoRepositoryQuery {
         String sql = "SELECT a FROM Aluno a " +
                 "JOIN a.usuario u " +
                 "WHERE a.idAluno != NULL ";
-        filterSql(nome, email, matricula);
+        filterSql(sql, nome, email, matricula);
         Query query = entityManager.createQuery(sql, Aluno.class);
         adicionarPaginacao(query, pageable);
         addParamFilter(query, nome, email, matricula);
@@ -29,14 +30,18 @@ public class AlunoRepositoryQueryImpl implements AlunoRepositoryQuery {
 
     @Override
     public Integer filterCount(String nome, String email, String matricula) {
-        String sql = "SELECT COUNT(a) FROM Aluno a " +
-                "JOIN a.usuario u " +
-                "WHERE a.idAluno != NULL ";
-        return null;
+        String sql = "SELECT COUNT(a.*) FROM aluno a " +
+                "JOIN usuario u ON a.id_usuario = u.id_usuario " +
+                "WHERE true ";
+
+        filterSql(sql, nome, email, matricula);
+        Query query = entityManager.createNativeQuery(sql);
+        addParamFilter(query, nome, email, matricula);
+        return ((BigInteger) query.getSingleResult()).intValue();
     }
 
 
-    private String filterSql(String nome, String email, String matricula) {
+    private String filterSql(String sql, String nome, String email, String matricula) {
         if (!StringUtils.isEmpty(nome)) {
             sql += "AND LOWER(u.nome) LIKE LOWER(:nome) ";
         }

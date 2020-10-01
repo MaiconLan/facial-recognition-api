@@ -64,9 +64,13 @@ public class AlunoService {
                 .map(AlunoDTO::new)
                 .collect(Collectors.toList());
 
+        int size = alunoRepository.filterCount(nome, email, matricula);
+        System.out.println("ALUNOS SIZE: " + alunos.size());
+        System.out.println("TOTAL SIZE: " + size);
+
         return new PageImpl<>(alunos,
                               pageable,
-                                alunos.size()
+                                size
         );
     }
 }
