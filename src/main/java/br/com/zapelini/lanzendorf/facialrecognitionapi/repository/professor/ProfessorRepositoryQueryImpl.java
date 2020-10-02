@@ -20,7 +20,7 @@ public class ProfessorRepositoryQueryImpl implements ProfessorRepositoryQuery {
         String sql = "SELECT p FROM Professor p " +
                 "JOIN p.usuario u " +
                 "WHERE p.idProfessor != NULL ";
-        filterSql(sql, nome, email);
+        sql = filterSql(sql, nome, email);
         Query query = entityManager.createQuery(sql, Professor.class);
         adicionarPaginacao(query, pageable);
         addParamFilter(query, nome, email);
@@ -33,7 +33,7 @@ public class ProfessorRepositoryQueryImpl implements ProfessorRepositoryQuery {
                 "JOIN usuario u ON p.id_usuario = u.id_usuario " +
                 "WHERE true ";
 
-        filterSql(sql, nome, email);
+        sql = filterSql(sql, nome, email);
         Query query = entityManager.createNativeQuery(sql);
         addParamFilter(query, nome, email);
         return ((BigInteger) query.getSingleResult()).intValue();
