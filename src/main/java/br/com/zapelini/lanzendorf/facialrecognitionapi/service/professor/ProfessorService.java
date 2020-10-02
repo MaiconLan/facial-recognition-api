@@ -8,6 +8,9 @@ import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.professor.dto.Pr
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.usuario.UsuarioService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
@@ -55,7 +58,15 @@ public class ProfessorService {
         return new ProfessorDTO(professor);
     }
 
-    public List<ProfessorDTO> getProfessores() {
-        return professorRepository.findAll().stream().map(ProfessorDTO::new).collect(Collectors.toList());
+    public Page<ProfessorDTO> filtrar(Pageable pageable, String nome, String email) {
+        List<ProfessorDTO> professores = professorRepository.filter(pageable, nome, email)
+                .stream()
+                .map(ProfessorDTO::new)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(professores,
+                pageable,
+                professorRepository.filterCount(nome, email)
+        );
     }
 }
