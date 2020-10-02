@@ -69,4 +69,9 @@ public class AlunoService {
                 alunoRepository.filterCount(nome, email, matricula)
         );
     }
+
+    public void excluir(Long idAluno) throws ApiException {
+        Aluno aluno = getAluno(idAluno);
+        alunoRepository.delete(aluno);
+    }
 }

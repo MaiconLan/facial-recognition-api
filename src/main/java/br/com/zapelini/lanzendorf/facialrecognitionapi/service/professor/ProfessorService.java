@@ -69,4 +69,9 @@ public class ProfessorService {
                 professorRepository.filterCount(nome, email)
         );
     }
+
+    public void excluir(Long idProfessor) throws ApiException {
+        Professor professor = getProfessor(idProfessor);
+        professorRepository.delete(professor);
+    }
 }

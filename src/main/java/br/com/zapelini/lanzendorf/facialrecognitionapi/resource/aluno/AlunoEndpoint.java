@@ -6,6 +6,7 @@ import br.com.zapelini.lanzendorf.facialrecognitionapi.service.aluno.AlunoServic
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,6 +42,12 @@ public class AlunoEndpoint {
                                                    @PathParam("matricula") String matricula) {
         Page<AlunoDTO> alunos = alunoService.filtrar(pageable, nome, email, matricula);
         return !alunos.isEmpty() ? ResponseEntity.ok(alunos) : ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public void excluir(@PathVariable(name = "id") Long idAluno) throws ApiException {
+        alunoService.excluir(idAluno);
     }
 
 }
