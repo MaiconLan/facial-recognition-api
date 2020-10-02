@@ -20,7 +20,7 @@ public class AlunoRepositoryQueryImpl implements AlunoRepositoryQuery {
         String sql = "SELECT a FROM Aluno a " +
                 "JOIN a.usuario u " +
                 "WHERE a.idAluno != NULL ";
-        filterSql(sql, nome, email, matricula);
+        sql = filterSql(sql, nome, email, matricula);
         Query query = entityManager.createQuery(sql, Aluno.class);
         adicionarPaginacao(query, pageable);
         addParamFilter(query, nome, email, matricula);
@@ -34,7 +34,7 @@ public class AlunoRepositoryQueryImpl implements AlunoRepositoryQuery {
                 "JOIN usuario u ON a.id_usuario = u.id_usuario " +
                 "WHERE true ";
 
-        filterSql(sql, nome, email, matricula);
+        sql = filterSql(sql, nome, email, matricula);
         Query query = entityManager.createNativeQuery(sql);
         addParamFilter(query, nome, email, matricula);
         return ((BigInteger) query.getSingleResult()).intValue();
