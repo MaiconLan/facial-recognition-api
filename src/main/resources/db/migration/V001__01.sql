@@ -24,8 +24,6 @@ CREATE TABLE public.aluno(
 
 );
 -- ddl-end --
-ALTER TABLE public.aluno OWNER TO postgres;
--- ddl-end --
 
 -- object: public.usuario | type: TABLE --
 -- DROP TABLE IF EXISTS public.usuario CASCADE;
@@ -39,8 +37,6 @@ CREATE TABLE public.usuario(
 
 );
 -- ddl-end --
-ALTER TABLE public.usuario OWNER TO postgres;
--- ddl-end --
 
 -- object: public.professor | type: TABLE --
 -- DROP TABLE IF EXISTS public.professor CASCADE;
@@ -50,8 +46,6 @@ CREATE TABLE public.professor(
 	CONSTRAINT id_professor_pk PRIMARY KEY (id_professor)
 
 );
--- ddl-end --
-ALTER TABLE public.professor OWNER TO postgres;
 -- ddl-end --
 
 -- object: usuario_fk | type: CONSTRAINT --
@@ -90,8 +84,6 @@ CREATE TABLE public.aula(
 
 );
 -- ddl-end --
-ALTER TABLE public.aula OWNER TO postgres;
--- ddl-end --
 
 -- object: public.turma | type: TABLE --
 -- DROP TABLE IF EXISTS public.turma CASCADE;
@@ -107,8 +99,6 @@ CREATE TABLE public.turma(
 	CONSTRAINT tipo_turma_check CHECK (tipo IN ('Semestral', 'Bimestral', 'Trimestral', 'Anual'))
 
 );
--- ddl-end --
-ALTER TABLE public.turma OWNER TO postgres;
 -- ddl-end --
 
 -- object: professor_fk | type: CONSTRAINT --
@@ -133,8 +123,6 @@ CREATE TABLE public.coordenador(
 	CONSTRAINT id_cordenador_pk PRIMARY KEY (id_coordenador)
 
 );
--- ddl-end --
-ALTER TABLE public.coordenador OWNER TO postgres;
 -- ddl-end --
 
 -- object: usuario_fk | type: CONSTRAINT --
@@ -184,8 +172,6 @@ CREATE TABLE public.presenca(
 
 );
 -- ddl-end --
-ALTER TABLE public.presenca OWNER TO postgres;
--- ddl-end --
 
 -- object: aluno_fk | type: CONSTRAINT --
 -- ALTER TABLE public.presenca DROP CONSTRAINT IF EXISTS aluno_fk CASCADE;
@@ -210,8 +196,6 @@ CREATE TABLE public.administrador(
 	CONSTRAINT id_administrador_pk PRIMARY KEY (id_administrador)
 
 );
--- ddl-end --
-ALTER TABLE public.administrador OWNER TO postgres;
 -- ddl-end --
 
 -- object: usuario_fk | type: CONSTRAINT --
