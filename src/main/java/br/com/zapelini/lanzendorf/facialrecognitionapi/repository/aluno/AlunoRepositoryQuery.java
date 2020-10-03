@@ -8,6 +8,7 @@ import java.util.List;
 public interface AlunoRepositoryQuery {
 
     List<Aluno> filter(Pageable pageable, String nome, String email, String matricula);
+
     Integer filterCount(String nome, String email, String matricula);
 
 }

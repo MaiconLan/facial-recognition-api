@@ -1,6 +1,6 @@
-package br.com.zapelini.lanzendorf.facialrecognitionapi.repository.aluno;
+package br.com.zapelini.lanzendorf.facialrecognitionapi.repository.professor;
 
-import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Aluno;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Professor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;
 
@@ -10,60 +10,50 @@ import javax.persistence.Query;
 import java.math.BigInteger;
 import java.util.List;
 
-public class AlunoRepositoryQueryImpl implements AlunoRepositoryQuery {
+public class ProfessorRepositoryQueryImpl implements ProfessorRepositoryQuery {
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @Override
-    public List<Aluno> filter(Pageable pageable, String nome, String email, String matricula) {
-        String sql = "SELECT a FROM Aluno a " +
-                "JOIN a.usuario u " +
-                "WHERE a.idAluno != NULL ";
-        sql = filterSql(sql, nome, email, matricula);
-        Query query = entityManager.createQuery(sql, Aluno.class);
+    public List<Professor> filter(Pageable pageable, String nome, String email) {
+        String sql = "SELECT p FROM Professor p " +
+                "JOIN p.usuario u " +
+                "WHERE p.idProfessor != NULL ";
+        sql = filterSql(sql, nome, email);
+        Query query = entityManager.createQuery(sql, Professor.class);
         adicionarPaginacao(query, pageable);
-        addParamFilter(query, nome, email, matricula);
+        addParamFilter(query, nome, email);
         return query.getResultList();
     }
 
-
     @Override
-    public Integer filterCount(String nome, String email, String matricula) {
-        String sql = "SELECT COUNT(a.*) FROM aluno a " +
-                "JOIN usuario u ON a.id_usuario = u.id_usuario " +
+    public Integer filterCount(String nome, String email) {
+        String sql = "SELECT COUNT(p.*) FROM professor p " +
+                "JOIN usuario u ON p.id_usuario = u.id_usuario " +
                 "WHERE true ";
 
-        sql = filterSql(sql, nome, email, matricula);
+        sql = filterSql(sql, nome, email);
         Query query = entityManager.createNativeQuery(sql);
-        addParamFilter(query, nome, email, matricula);
+        addParamFilter(query, nome, email);
         return ((BigInteger) query.getSingleResult()).intValue();
     }
-
-
-    private String filterSql(String sql, String nome, String email, String matricula) {
+    private String filterSql(String sql, String nome, String email) {
         if (!StringUtils.isEmpty(nome)) {
             sql += "AND LOWER(u.nome) LIKE LOWER(:nome) ";
         }
         if (!StringUtils.isEmpty(email)) {
             sql += "AND u.email = :email ";
         }
-        if (!StringUtils.isEmpty(matricula)) {
-            sql += "AND a.matricula = :matricula ";
-        }
-
         return sql;
     }
 
-    private void addParamFilter(Query query, String nome, String email, String matricula) {
+    private void addParamFilter(Query query, String nome, String email) {
         if(!StringUtils.isEmpty(nome)) {
             query.setParameter("nome", "%" + nome + "%");
         }
         if(!StringUtils.isEmpty(email)) {
             query.setParameter("email", email);
-        }
-        if(!StringUtils.isEmpty(matricula)) {
-            query.setParameter("matricula", matricula);
         }
     }
 
