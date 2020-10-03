@@ -1,7 +1,8 @@
-package br.com.zapelini.lanzendorf.facialrecognitionapi.token;
+package br.com.zapelini.lanzendorf.facialrecognitionapi.config.token;
 
 import br.com.zapelini.lanzendorf.facialrecognitionapi.config.property.FacialRecognitionApiProperty;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @ControllerAdvice
+@Profile("oauth-security")
 public class RefreshTokenProcessor implements ResponseBodyAdvice<OAuth2AccessToken> {
 
     @Autowired
