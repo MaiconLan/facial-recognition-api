@@ -201,3 +201,26 @@ REFERENCES public.aula (id_aula) MATCH FULL
 ON DELETE CASCADE ON UPDATE CASCADE;
 -- ddl-end --
 
+
+-- object: public.coordenador | type: TABLE --
+-- DROP TABLE IF EXISTS public.coordenador CASCADE;
+CREATE TABLE public.administrador(
+	id_administrador serial NOT NULL,
+	id_usuario integer,
+	CONSTRAINT id_administrador_pk PRIMARY KEY (id_administrador)
+
+);
+-- ddl-end --
+ALTER TABLE public.administrador OWNER TO postgres;
+-- ddl-end --
+
+-- object: usuario_fk | type: CONSTRAINT --
+-- ALTER TABLE public.administrador DROP CONSTRAINT IF EXISTS usuario_fk CASCADE;
+ALTER TABLE public.administrador ADD CONSTRAINT usuario_fk FOREIGN KEY (id_usuario)
+REFERENCES public.usuario (id_usuario) MATCH FULL
+ON DELETE CASCADE ON UPDATE CASCADE;
+
+INSERT INTO usuario (id_usuario, nome, email, usuario, senha)
+VALUES (nextval('usuario_id_usuario_seq'), 'administrador', 'administrador@email.com', 'admin', '$2a$10$WCvDwr10dJ4yEa7jmD3fhevkG4nbgoJfFGxRjVMvq3enJZL7OFGg6');
+
+INSERT INTO administrador (id_usuario) VALUES (currval('usuario_id_usuario_seq'));

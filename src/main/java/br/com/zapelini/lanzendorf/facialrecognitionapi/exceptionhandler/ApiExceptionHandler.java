@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -63,8 +64,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, erro, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
-    @ExceptionHandler({ ApiException.class })
-    public ResponseEntity<Object> handleApiException(ApiException ex, WebRequest request) {
+    @ExceptionHandler({ ApiException.class, UsernameNotFoundException.class })
+    public ResponseEntity<Object> handleMessageException(Exception ex, WebRequest request) {
         String mensagemUsuario = ex.getMessage();
         String mensagemDesenvolvedor = ex.toString();
         Erro erro = new Erro(mensagemUsuario, mensagemDesenvolvedor);

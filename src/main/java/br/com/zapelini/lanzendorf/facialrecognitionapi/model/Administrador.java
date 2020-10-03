@@ -1,9 +1,8 @@
 package br.com.zapelini.lanzendorf.facialrecognitionapi.model;
 
-import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.AlunoDTO;
-import lombok.Getter;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.usuario.dto.AdministradorDTO;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,27 +14,23 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-@Getter
-@Setter
+@Data
 @Entity
-@Table(name = "aluno")
+@Table(name = "administrador")
 @NoArgsConstructor
-public class Aluno {
+public class Administrador {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_aluno")
-    private Long idAluno;
-
-    private String matricula;
+    @Column(name = "id_administrador")
+    private Long idAdministrador;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
-    public Aluno(AlunoDTO alunoDTO) {
-        this.usuario = new Usuario(alunoDTO);
-        this.matricula = alunoDTO.getMatricula();
+    public Administrador(AdministradorDTO administradorDTO) {
+        this.usuario = new Usuario(administradorDTO);
     }
 
 }
