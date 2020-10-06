@@ -24,8 +24,6 @@ CREATE TABLE public.aluno(
 
 );
 -- ddl-end --
-ALTER TABLE public.aluno OWNER TO postgres;
--- ddl-end --
 
 -- object: public.usuario | type: TABLE --
 -- DROP TABLE IF EXISTS public.usuario CASCADE;
@@ -39,8 +37,6 @@ CREATE TABLE public.usuario(
 
 );
 -- ddl-end --
-ALTER TABLE public.usuario OWNER TO postgres;
--- ddl-end --
 
 -- object: public.professor | type: TABLE --
 -- DROP TABLE IF EXISTS public.professor CASCADE;
@@ -50,8 +46,6 @@ CREATE TABLE public.professor(
 	CONSTRAINT id_professor_pk PRIMARY KEY (id_professor)
 
 );
--- ddl-end --
-ALTER TABLE public.professor OWNER TO postgres;
 -- ddl-end --
 
 -- object: usuario_fk | type: CONSTRAINT --
@@ -90,8 +84,6 @@ CREATE TABLE public.aula(
 
 );
 -- ddl-end --
-ALTER TABLE public.aula OWNER TO postgres;
--- ddl-end --
 
 -- object: public.turma | type: TABLE --
 -- DROP TABLE IF EXISTS public.turma CASCADE;
@@ -107,8 +99,6 @@ CREATE TABLE public.turma(
 	CONSTRAINT tipo_turma_check CHECK (tipo IN ('Semestral', 'Bimestral', 'Trimestral', 'Anual'))
 
 );
--- ddl-end --
-ALTER TABLE public.turma OWNER TO postgres;
 -- ddl-end --
 
 -- object: professor_fk | type: CONSTRAINT --
@@ -133,8 +123,6 @@ CREATE TABLE public.coordenador(
 	CONSTRAINT id_cordenador_pk PRIMARY KEY (id_coordenador)
 
 );
--- ddl-end --
-ALTER TABLE public.coordenador OWNER TO postgres;
 -- ddl-end --
 
 -- object: usuario_fk | type: CONSTRAINT --
@@ -184,8 +172,6 @@ CREATE TABLE public.presenca(
 
 );
 -- ddl-end --
-ALTER TABLE public.presenca OWNER TO postgres;
--- ddl-end --
 
 -- object: aluno_fk | type: CONSTRAINT --
 -- ALTER TABLE public.presenca DROP CONSTRAINT IF EXISTS aluno_fk CASCADE;
@@ -201,3 +187,24 @@ REFERENCES public.aula (id_aula) MATCH FULL
 ON DELETE CASCADE ON UPDATE CASCADE;
 -- ddl-end --
 
+
+-- object: public.coordenador | type: TABLE --
+-- DROP TABLE IF EXISTS public.coordenador CASCADE;
+CREATE TABLE public.administrador(
+	id_administrador serial NOT NULL,
+	id_usuario integer,
+	CONSTRAINT id_administrador_pk PRIMARY KEY (id_administrador)
+
+);
+-- ddl-end --
+
+-- object: usuario_fk | type: CONSTRAINT --
+-- ALTER TABLE public.administrador DROP CONSTRAINT IF EXISTS usuario_fk CASCADE;
+ALTER TABLE public.administrador ADD CONSTRAINT usuario_fk FOREIGN KEY (id_usuario)
+REFERENCES public.usuario (id_usuario) MATCH FULL
+ON DELETE CASCADE ON UPDATE CASCADE;
+
+INSERT INTO usuario (id_usuario, nome, email, usuario, senha)
+VALUES (nextval('usuario_id_usuario_seq'), 'administrador', 'administrador@email.com', 'admin', '$2a$10$WCvDwr10dJ4yEa7jmD3fhevkG4nbgoJfFGxRjVMvq3enJZL7OFGg6');
+
+INSERT INTO administrador (id_usuario) VALUES (currval('usuario_id_usuario_seq'));
