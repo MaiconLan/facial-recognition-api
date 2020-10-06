@@ -1,4 +1,4 @@
-package br.com.zapelini.lanzendorf.facialrecognitionapi.config;
+package br.com.zapelini.lanzendorf.facialrecognitionapi.cors;
 
 import java.io.IOException;
 

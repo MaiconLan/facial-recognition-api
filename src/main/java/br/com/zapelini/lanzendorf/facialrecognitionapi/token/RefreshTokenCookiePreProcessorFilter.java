@@ -1,4 +1,4 @@
-package br.com.zapelini.lanzendorf.facialrecognitionapi.config.token;
+package br.com.zapelini.lanzendorf.facialrecognitionapi.token;
 
 import org.apache.catalina.util.ParameterMap;
 import org.springframework.context.annotation.Profile;
@@ -24,10 +24,12 @@ import java.util.Map;
 public class RefreshTokenCookiePreProcessorFilter implements Filter {
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+
         HttpServletRequest req = (HttpServletRequest) request;
 
-        if ("/oauth/token".equalsIgnoreCase(req.getRequestURI())
+        if ("/reconhecimento/oauth/token".equalsIgnoreCase(req.getRequestURI())
                 && "refresh_token".equals(req.getParameter("grant_type"))
                 && req.getCookies() != null) {
             for (Cookie cookie : req.getCookies()) {
@@ -36,11 +38,11 @@ public class RefreshTokenCookiePreProcessorFilter implements Filter {
                     req = new MyServletRequestWrapper(req, refreshToken);
                 }
             }
-
         }
 
         chain.doFilter(req, response);
     }
+
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {

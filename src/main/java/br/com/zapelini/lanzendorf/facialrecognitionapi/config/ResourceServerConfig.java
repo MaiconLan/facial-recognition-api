@@ -9,9 +9,9 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 
+@Profile("oauth-security")
 @Configuration
 @EnableResourceServer
-@Profile("oauth-security")
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Override
@@ -24,7 +24,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     }
 
     @Override
-    public void configure(ResourceServerSecurityConfigurer resources) {
-        resources.stateless(Boolean.TRUE);
+    public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
+        resources.stateless(true);
     }
 }

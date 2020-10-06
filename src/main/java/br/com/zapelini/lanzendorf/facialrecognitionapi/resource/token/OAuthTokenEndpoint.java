@@ -23,7 +23,7 @@ public class OAuthTokenEndpoint {
         Cookie cookie = new Cookie("refresh_token", null);
         cookie.setHttpOnly(Boolean.TRUE);
         cookie.setSecure(property.getSeguranca().getEnableHttps());
-        cookie.setPath(request.getContextPath() + "/oauth/token");
+        cookie.setPath(request.getContextPath() + "/reconhecimento/oauth/token");
         cookie.setMaxAge(0);
 
         response.addCookie(cookie);

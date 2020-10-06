@@ -1,4 +1,4 @@
-package br.com.zapelini.lanzendorf.facialrecognitionapi.config.token;
+package br.com.zapelini.lanzendorf.facialrecognitionapi.token;
 
 import br.com.zapelini.lanzendorf.facialrecognitionapi.config.property.FacialRecognitionApiProperty;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @ControllerAdvice
 @Profile("oauth-security")
-public class RefreshTokenProcessor implements ResponseBodyAdvice<OAuth2AccessToken> {
+public class RefreshTokenPostProcessor implements ResponseBodyAdvice<OAuth2AccessToken> {
 
     @Autowired
     private FacialRecognitionApiProperty property;
@@ -54,7 +54,7 @@ public class RefreshTokenProcessor implements ResponseBodyAdvice<OAuth2AccessTok
         Cookie cookie = new Cookie("refresh_token", refreshToken);
         cookie.setHttpOnly(Boolean.TRUE);
         cookie.setSecure(property.getSeguranca().getEnableHttps());
-        cookie.setPath(request.getContextPath() + "/oauth/token");
+        cookie.setPath(request.getContextPath() + "/reconhecimento/oauth/token");
         cookie.setMaxAge(2592000);
         response.addCookie(cookie);
     }

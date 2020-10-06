@@ -1,4 +1,4 @@
-package br.com.zapelini.lanzendorf.facialrecognitionapi.config.token;
+package br.com.zapelini.lanzendorf.facialrecognitionapi.token;
 
 import br.com.zapelini.lanzendorf.facialrecognitionapi.security.UsuarioSistema;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
