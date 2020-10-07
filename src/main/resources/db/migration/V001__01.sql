@@ -96,7 +96,7 @@ CREATE TABLE public.turma(
 	tipo character varying,
 	finalizada boolean,
 	CONSTRAINT id_turma_pk PRIMARY KEY (id_turma),
-	CONSTRAINT tipo_turma_check CHECK (tipo IN ('Semestral', 'Bimestral', 'Trimestral', 'Anual'))
+	CONSTRAINT tipo_turma_check CHECK (tipo IN ('BIMESTRAL', 'TRIMESTRAL', 'SEMESTRAL', 'ANUAL'))
 
 );
 -- ddl-end --
