@@ -13,4 +13,5 @@ public interface ProfessorRepositoryQuery {
 
     Integer filterCount(String nome, String email);
 
+    Boolean hasTurma(Long idProfessor);
 }

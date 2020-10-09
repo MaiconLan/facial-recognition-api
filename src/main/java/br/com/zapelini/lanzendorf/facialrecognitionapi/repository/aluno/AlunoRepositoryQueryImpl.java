@@ -40,6 +40,18 @@ public class AlunoRepositoryQueryImpl implements AlunoRepositoryQuery {
         return ((BigInteger) query.getSingleResult()).intValue();
     }
 
+    @Override
+    public Boolean hasTurma(Long idAluno) {
+        String sql = "SELECT COUNT(t) FROM Turma t " +
+                "JOIN t.alunos a " +
+                "WHERE a.idAluno = :idAluno ";
+
+        return entityManager.createQuery(sql, Long.class)
+                .setParameter("idAluno", idAluno)
+                .setMaxResults(1)
+                .getSingleResult() > 0;
+    }
+
 
     private String filterSql(String sql, String nome, String email, String matricula) {
         if (!StringUtils.isEmpty(nome)) {

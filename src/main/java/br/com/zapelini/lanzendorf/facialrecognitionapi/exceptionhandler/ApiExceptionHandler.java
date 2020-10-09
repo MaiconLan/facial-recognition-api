@@ -58,7 +58,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({ RecursoInexistenteException.class })
     public ResponseEntity<Object> handleRecursoInexistenteException(RecursoInexistenteException ex, WebRequest request) {
-        String mensagemUsuario = messageSource.getMessage("recurso.nao-encontrado", null, LocaleContextHolder.getLocale());
+        String mensagemUsuario = messageSource.getMessage("recurso.nao-encontrado", new Object[]{ex.getMessage()}, LocaleContextHolder.getLocale());
         String mensagemDesenvolvedor = ex.toString();
         Erro erro = new Erro(mensagemUsuario, mensagemDesenvolvedor);
         return handleExceptionInternal(ex, erro, new HttpHeaders(), HttpStatus.NOT_FOUND, request);

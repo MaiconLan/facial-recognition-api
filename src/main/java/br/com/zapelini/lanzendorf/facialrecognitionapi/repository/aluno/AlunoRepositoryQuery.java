@@ -11,4 +11,5 @@ public interface AlunoRepositoryQuery {
 
     Integer filterCount(String nome, String email, String matricula);
 
+    Boolean hasTurma(Long idAluno);
 }
