@@ -72,6 +72,15 @@ public class AlunoService {
 
     public void excluir(Long idAluno) throws ApiException {
         Aluno aluno = getAluno(idAluno);
+
+        validarExclusao(aluno);
+
         alunoRepository.delete(aluno);
+    }
+
+    private void validarExclusao(Aluno aluno) throws ApiException {
+        if(alunoRepository.hasTurma(aluno.getIdAluno())){
+            throw new ApiException("Este aluno está vinculado em ao menos uma turma");
+        }
     }
 }

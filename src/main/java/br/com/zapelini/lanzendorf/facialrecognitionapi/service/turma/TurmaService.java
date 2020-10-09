@@ -97,4 +97,10 @@ public class TurmaService {
                 turmaRepository.filterCount(materia, periodo, tipoEnum, finalizada)
         );
     }
+
+    public void excluir(Long idTurma) throws RecursoInexistenteException {
+        Turma turma = getTurma(idTurma);
+        turmaRepository.delete(turma);
+    }
+
 }

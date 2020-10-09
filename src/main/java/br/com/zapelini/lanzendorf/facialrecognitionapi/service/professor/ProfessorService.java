@@ -72,6 +72,15 @@ public class ProfessorService {
 
     public void excluir(Long idProfessor) throws ApiException {
         Professor professor = getProfessor(idProfessor);
+
+        validarExclusao(professor);
+
         professorRepository.delete(professor);
+    }
+
+    private void validarExclusao(Professor professor) throws ApiException {
+        if(professorRepository.hasTurma(professor.getIdProfessor())){
+            throw new ApiException("Este professor está vinculado em ao menos uma turma");
+        }
     }
 }

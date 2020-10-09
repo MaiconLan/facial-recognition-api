@@ -38,6 +38,19 @@ public class ProfessorRepositoryQueryImpl implements ProfessorRepositoryQuery {
         addParamFilter(query, nome, email);
         return ((BigInteger) query.getSingleResult()).intValue();
     }
+
+    @Override
+    public Boolean hasTurma(Long idProfessor) {
+        String sql = "SELECT COUNT(t) FROM Turma t " +
+                "JOIN t.professor p " +
+                "WHERE p.idProfessor = :idProfessor ";
+
+        return entityManager.createQuery(sql, Long.class)
+                .setParameter("idProfessor", idProfessor)
+                .setMaxResults(1)
+                .getSingleResult() > 0;
+    }
+
     private String filterSql(String sql, String nome, String email) {
         if (!StringUtils.isEmpty(nome)) {
             sql += "AND LOWER(u.nome) LIKE LOWER(:nome) ";
