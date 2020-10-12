@@ -1,5 +1,6 @@
 package br.com.zapelini.lanzendorf.facialrecognitionapi.model;
 
+import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma.dto.AulaDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,4 +26,13 @@ public class Aula {
 
     private LocalDateTime termino;
 
+    @ManyToOne
+    @JoinColumn(name = "id_turma")
+    private Turma turma;
+
+    public Aula(AulaDTO aulaDTO) {
+        this.titulo = aulaDTO.getTitle();
+        this.inicio = aulaDTO.getStart();
+        this.termino = aulaDTO.getEnd();
+    }
 }

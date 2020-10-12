@@ -1,6 +1,8 @@
 package br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma;
 
 import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.ApiException;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.RecursoInexistenteException;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma.dto.AulaDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma.dto.TurmaDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.turma.TurmaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.websocket.server.PathParam;
+import java.util.List;
 
 @RestController
 @RequestMapping("/turma")
@@ -56,6 +59,31 @@ public class TurmaEndpoint {
     @ResponseStatus(code = HttpStatus.OK)
     public void remover(@PathVariable(name = "id") Long idTurma) throws ApiException {
         turmaService.excluir(idTurma);
+    }
+
+    @PostMapping("/{id}/aula")
+    public ResponseEntity<AulaDTO> criarAula(@PathVariable(name = "id") Long idTurma, @RequestBody AulaDTO aulaDTO) throws ApiException {
+        return ResponseEntity.ok(turmaService.criarAula(idTurma, aulaDTO));
+    }
+
+    @PutMapping("/aula/{id}")
+    public ResponseEntity<AulaDTO> atualizarTurma(@PathVariable(name = "id") Long idAula, @RequestBody AulaDTO aulaDTO) throws ApiException {
+        return ResponseEntity.ok(turmaService.atualizarTurma(idAula, aulaDTO));
+    }
+
+    @GetMapping("/{id}/aula")
+    public ResponseEntity<List<AulaDTO>> getAulas(@PathVariable(name = "id") Long idTurma) throws RecursoInexistenteException {
+        return ResponseEntity.ok(turmaService.getAulas(idTurma));
+    }
+
+    @GetMapping("/aula/{id}")
+    public ResponseEntity<AulaDTO> getAula(@PathVariable(name = "id") Long idAula) throws RecursoInexistenteException {
+        return ResponseEntity.ok(turmaService.getAulaDTO(idAula));
+    }
+
+    @DeleteMapping("/aula/{id}")
+    public void removerAula(@PathVariable(name = "id") Long idAula) throws RecursoInexistenteException {
+        turmaService.removerAula(idAula);
     }
 
 }
