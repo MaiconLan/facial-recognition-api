@@ -1,8 +1,10 @@
 package br.com.zapelini.lanzendorf.facialrecognitionapi.model;
 
+import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma.dto.AulaDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.flywaydb.core.internal.util.DateUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -25,4 +27,13 @@ public class Aula {
 
     private LocalDateTime termino;
 
+    @ManyToOne
+    @JoinColumn(name = "id_turma")
+    private Turma turma;
+
+    public Aula(AulaDTO aulaDTO) {
+        this.titulo = aulaDTO.getTitle();
+        this.inicio = LocalDateTime.of(aulaDTO.getDate(), aulaDTO.getStart());
+        this.termino = LocalDateTime.of(aulaDTO.getDate(), aulaDTO.getEnd());
+    }
 }

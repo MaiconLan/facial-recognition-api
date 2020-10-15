@@ -3,12 +3,15 @@ package br.com.zapelini.lanzendorf.facialrecognitionapi.service.turma;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.ApiException;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.RecursoInexistenteException;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Aluno;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Aula;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Professor;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Tipo;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Turma;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.repository.aula.AulaRepository;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.repository.turma.TurmaRepository;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.AlunoDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.professor.dto.ProfessorDTO;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma.dto.AulaDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma.dto.TurmaDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.aluno.AlunoService;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.professor.ProfessorService;
@@ -34,6 +37,9 @@ public class TurmaService {
 
     @Autowired
     private AlunoService alunoService;
+
+    @Autowired
+    private AulaRepository aulaRepository;
 
     public TurmaDTO criarTurma(TurmaDTO turmaDTO) throws ApiException {
         Turma turma = new Turma(turmaDTO);
@@ -103,4 +109,40 @@ public class TurmaService {
         turmaRepository.delete(turma);
     }
 
+    public AulaDTO criarAula(Long idTurma, AulaDTO aulaDTO) throws ApiException {
+        Turma turma = getTurma(idTurma);
+        Aula aula = new Aula(aulaDTO);
+        aula.setTurma(turma);
+
+        return new AulaDTO(aulaRepository.save(aula));
+    }
+
+    public List<AulaDTO> getAulas(Long idTurma) throws RecursoInexistenteException {
+        Turma turma = getTurma(idTurma);
+        return aulaRepository.findByTurma(turma).stream().map(AulaDTO::new).collect(Collectors.toList());
+    }
+
+    public AulaDTO getAulaDTO(Long idAula) throws RecursoInexistenteException {
+        return new AulaDTO(getAula(idAula));
+    }
+
+    public Aula getAula(Long idAula) throws RecursoInexistenteException {
+        return aulaRepository.findById(idAula).orElseThrow(() -> new RecursoInexistenteException("Aula não encontrada"));
+    }
+
+    public void removerAula(Long idAula) throws RecursoInexistenteException {
+        Aula aula = getAula(idAula);
+        aulaRepository.delete(aula);
+    }
+
+    public AulaDTO atualizarTurma(Long idAula, AulaDTO aulaDTO) throws RecursoInexistenteException {
+        Aula aulaSaved = getAula(idAula);
+        Aula aula = new Aula(aulaDTO);
+
+        BeanUtils.copyProperties(aula, aulaSaved, "idAula", "turma");
+
+        aulaRepository.save(aulaSaved);
+
+        return getAulaDTO(idAula);
+    }
 }
