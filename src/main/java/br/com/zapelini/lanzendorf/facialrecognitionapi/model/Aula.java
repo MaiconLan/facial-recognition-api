@@ -4,6 +4,7 @@ import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma.dto.AulaDT
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.flywaydb.core.internal.util.DateUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -32,7 +33,7 @@ public class Aula {
 
     public Aula(AulaDTO aulaDTO) {
         this.titulo = aulaDTO.getTitle();
-        this.inicio = aulaDTO.getStart();
-        this.termino = aulaDTO.getEnd();
+        this.inicio = LocalDateTime.of(aulaDTO.getDate(), aulaDTO.getStart());
+        this.termino = LocalDateTime.of(aulaDTO.getDate(), aulaDTO.getEnd());
     }
 }
