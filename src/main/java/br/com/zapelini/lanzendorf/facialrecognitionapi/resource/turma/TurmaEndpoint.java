@@ -2,7 +2,9 @@ package br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma;
 
 import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.ApiException;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.RecursoInexistenteException;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.AlunoDashboardDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma.dto.AulaDTO;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma.dto.AulaDashboardDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma.dto.TurmaDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.turma.TurmaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,6 +86,11 @@ public class TurmaEndpoint {
     @DeleteMapping("/aula/{id}")
     public void removerAula(@PathVariable(name = "id") Long idAula) throws RecursoInexistenteException {
         turmaService.removerAula(idAula);
+    }
+
+    @GetMapping("/dashboard")
+    public ResponseEntity<AulaDashboardDTO> getDadosDashboard() {
+        return ResponseEntity.ok(turmaService.getDadosDashboard());
     }
 
 }

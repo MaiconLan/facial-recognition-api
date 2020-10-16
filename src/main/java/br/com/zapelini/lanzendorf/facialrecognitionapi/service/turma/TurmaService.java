@@ -10,8 +10,10 @@ import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Turma;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.repository.aula.AulaRepository;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.repository.turma.TurmaRepository;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.AlunoDTO;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.AlunoDashboardDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.professor.dto.ProfessorDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma.dto.AulaDTO;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma.dto.AulaDashboardDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma.dto.TurmaDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.aluno.AlunoService;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.professor.ProfessorService;
@@ -144,5 +146,11 @@ public class TurmaService {
         aulaRepository.save(aulaSaved);
 
         return getAulaDTO(idAula);
+    }
+
+    public AulaDashboardDTO getDadosDashboard() {
+        AulaDashboardDTO dados = new AulaDashboardDTO();
+        dados.setAulasDoDia(aulaRepository.aulasdoDia());
+        return dados;
     }
 }

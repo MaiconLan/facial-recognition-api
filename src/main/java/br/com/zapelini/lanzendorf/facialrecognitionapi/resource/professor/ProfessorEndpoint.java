@@ -1,7 +1,9 @@
 package br.com.zapelini.lanzendorf.facialrecognitionapi.resource.professor;
 
 import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.ApiException;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.AlunoDashboardDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.professor.dto.ProfessorDTO;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.professor.dto.ProfessorDashboardDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.professor.ProfessorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -55,6 +57,11 @@ public class ProfessorEndpoint {
     @ResponseStatus(code = HttpStatus.OK)
     public void excluir(@PathVariable(name = "id") Long idProfessor) throws ApiException {
         professorService.excluir(idProfessor);
+    }
+
+    @GetMapping("/dashboard")
+    public ResponseEntity<ProfessorDashboardDTO> getDadosDashboard() {
+        return ResponseEntity.ok(professorService.getDadosDashboard());
     }
 
 }
