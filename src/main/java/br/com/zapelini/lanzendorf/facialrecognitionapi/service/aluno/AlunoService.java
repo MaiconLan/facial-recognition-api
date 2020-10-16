@@ -2,8 +2,10 @@ package br.com.zapelini.lanzendorf.facialrecognitionapi.service.aluno;
 
 import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.ApiException;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Aluno;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Foto;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Usuario;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.repository.aluno.AlunoRepository;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.repository.foto.FotoRepository;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.AlunoDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.AlunoDashboardDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.usuario.UsuarioService;
@@ -13,7 +15,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,8 +29,13 @@ import java.util.stream.Collectors;
 @Service
 public class AlunoService {
 
+    private static final String PATH_FOTO = "C:\\facial-api\\";
+
     @Autowired
     private AlunoRepository alunoRepository;
+
+    @Autowired
+    private FotoRepository fotoRepository;
 
     @Autowired
     private UsuarioService usuarioService;
@@ -89,5 +102,38 @@ public class AlunoService {
         AlunoDashboardDTO dados = new AlunoDashboardDTO();
         dados.setAlunosCadastrados(alunoRepository.count());
         return dados;
+    }
+
+    @Transactional
+    public String uploadFoto(Long idAluno, MultipartFile file) throws IOException, ApiException {
+        Aluno aluno = getAluno(idAluno);
+        String nomeOriginal = file.getOriginalFilename();
+        int indexExtensao = nomeOriginal.lastIndexOf(".");
+        String extensao = nomeOriginal.substring(indexExtensao + 1);
+
+        Foto foto = new Foto();
+        foto.setAluno(aluno);
+        foto.setExtensao(extensao);
+
+        foto = fotoRepository.save(foto);
+
+        String nome = criarNomeFoto(aluno, foto);
+
+        foto.setNome(nome);
+        fotoRepository.save(foto);
+
+        OutputStream outputStream = new FileOutputStream(PATH_FOTO + nome + "." + extensao);
+
+        outputStream.write(file.getBytes());
+        outputStream.close();
+
+        aluno.getFotos().add(foto);
+        alunoRepository.save(aluno);
+
+        return foto.getNome() + "." + foto.getExtensao();
+    }
+
+    private String criarNomeFoto(Aluno aluno, Foto foto) {
+        return aluno.getIdAluno() + "_" + foto.getIdFoto().toString();
     }
 }
