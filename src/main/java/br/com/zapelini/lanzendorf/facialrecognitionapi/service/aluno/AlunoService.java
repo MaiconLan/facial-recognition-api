@@ -5,6 +5,7 @@ import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Aluno;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Usuario;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.repository.aluno.AlunoRepository;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.AlunoDTO;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.AlunoDashboardDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.usuario.UsuarioService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,5 +83,11 @@ public class AlunoService {
         if(alunoRepository.hasTurma(aluno.getIdAluno())){
             throw new ApiException("Este aluno está vinculado em ao menos uma turma");
         }
+    }
+
+    public AlunoDashboardDTO getDadosDashboard() {
+        AlunoDashboardDTO dados = new AlunoDashboardDTO();
+        dados.setAlunosCadastrados(alunoRepository.count());
+        return dados;
     }
 }
