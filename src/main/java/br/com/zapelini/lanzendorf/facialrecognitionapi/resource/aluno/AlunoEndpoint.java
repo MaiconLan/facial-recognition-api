@@ -1,8 +1,10 @@
 package br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno;
 
 import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.ApiException;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.RecursoInexistenteException;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.AlunoDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.AlunoDashboardDTO;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.FotoDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.aluno.AlunoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.websocket.server.PathParam;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/aluno")
@@ -67,10 +70,22 @@ public class AlunoEndpoint {
         return ResponseEntity.ok(alunoService.getDadosDashboard());
     }
 
-    @PostMapping("{id}/foto")
-    public ResponseEntity<String> uploadFoto(@PathVariable(name = "id") Long idAluno,
-                                             @RequestParam MultipartFile foto) throws IOException, ApiException {
-        return ResponseEntity.ok(alunoService.uploadFoto(idAluno, foto));
+    @PostMapping("/{id}/foto")
+    @ResponseStatus(code = HttpStatus.OK)
+    public void uploadFoto(@PathVariable(name = "id") Long idAluno,
+                                             @RequestParam(name = "foto") MultipartFile foto) throws IOException, ApiException {
+        alunoService.uploadFoto(idAluno, foto);
+    }
+
+    @GetMapping("/{id}/foto")
+    public ResponseEntity<List<FotoDTO>> getFotos(@PathVariable(name = "id") Long idAluno) {
+        return ResponseEntity.ok(alunoService.getFotos(idAluno));
+    }
+
+    @DeleteMapping("/foto/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public void excluirFoto(@PathVariable(name = "id") Long idFoto) throws RecursoInexistenteException, IOException {
+        alunoService.excluirFoto(idFoto);
     }
 
 }

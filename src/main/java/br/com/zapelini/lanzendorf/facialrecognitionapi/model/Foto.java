@@ -28,7 +28,7 @@ public class Foto {
 
     private String extensao;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "id_aluno")
     private Aluno aluno;
 

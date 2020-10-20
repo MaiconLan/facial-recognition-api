@@ -1,6 +1,7 @@
 package br.com.zapelini.lanzendorf.facialrecognitionapi.service.aluno;
 
 import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.ApiException;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.RecursoInexistenteException;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Aluno;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Foto;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Usuario;
@@ -8,6 +9,7 @@ import br.com.zapelini.lanzendorf.facialrecognitionapi.repository.aluno.AlunoRep
 import br.com.zapelini.lanzendorf.facialrecognitionapi.repository.foto.FotoRepository;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.AlunoDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.AlunoDashboardDTO;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.FotoDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.usuario.UsuarioService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +20,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -122,6 +130,12 @@ public class AlunoService {
         foto.setNome(nome);
         fotoRepository.save(foto);
 
+        File path = new File(PATH_FOTO);
+
+        if (!path.exists()) {
+            path.mkdir();
+        }
+
         OutputStream outputStream = new FileOutputStream(PATH_FOTO + nome + "." + extensao);
 
         outputStream.write(file.getBytes());
@@ -136,4 +150,43 @@ public class AlunoService {
     private String criarNomeFoto(Aluno aluno, Foto foto) {
         return aluno.getIdAluno() + "_" + foto.getIdFoto().toString();
     }
+
+    public List<FotoDTO> getFotos(Long idAluno) {
+        List<Foto> fotos = fotoRepository.findByIdAluno(idAluno);
+        return fotos.stream().map(foto -> {
+                String nomeCompleto = foto.getNome() + "." + foto.getExtensao();
+                FotoDTO fotoDTO = new FotoDTO();
+                fotoDTO.setIdFoto(foto.getIdFoto());
+                fotoDTO.setNome(nomeCompleto);
+
+            try {
+                InputStream inputStream = new FileInputStream(PATH_FOTO + nomeCompleto);
+                fotoDTO.setFoto(inputStream.readAllBytes());
+                inputStream.close();
+                return fotoDTO;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return fotoDTO;
+            }
+        }).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void excluirFoto(Long idFoto) throws RecursoInexistenteException, IOException {
+        Foto foto = fotoRepository.findById(idFoto).orElseThrow(() -> new RecursoInexistenteException("Foto não encontrada na base de dados"));
+
+        File file = new File(PATH_FOTO + foto.getNome() + "." + foto.getExtensao());
+
+        if(file.exists()) {
+            file.delete();
+        }
+
+        fotoRepository.delete(foto);
+    }
+
+    private InputStream getArquivoFisico(Foto foto) throws FileNotFoundException {
+        String nomeCompleto = foto.getNome() + "." + foto.getExtensao();
+        return new FileInputStream(PATH_FOTO + nomeCompleto);
+    }
 }
+ 
