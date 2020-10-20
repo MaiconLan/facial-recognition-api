@@ -52,6 +52,17 @@ public class AlunoRepositoryQueryImpl implements AlunoRepositoryQuery {
                 .getSingleResult() > 0;
     }
 
+    @Override
+    public Long countAlunosSemFotos() {
+        String sql = "SELECT COUNT(a) FROM Aluno a " +
+                "LEFT JOIN a.fotos f " +
+                "WHERE f.idFoto IS NULL ";
+
+        return entityManager.createQuery(sql, Long.class)
+                .setMaxResults(1)
+                .getSingleResult();
+    }
+
 
     private String filterSql(String sql, String nome, String email, String matricula) {
         if (!StringUtils.isEmpty(nome)) {

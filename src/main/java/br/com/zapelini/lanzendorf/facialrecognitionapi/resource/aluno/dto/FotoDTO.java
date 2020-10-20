@@ -1,14 +1,14 @@
 package br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto;
 
-
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class AlunoDashboardDTO {
+public class FotoDTO {
 
-    private Long alunosCadastrados;
-    private Long alunosSemFotos;
+    private Long idFoto;
+    private String nome;
+    private byte[] foto;
 
 }

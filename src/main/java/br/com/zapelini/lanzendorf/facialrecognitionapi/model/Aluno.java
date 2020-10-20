@@ -12,8 +12,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -32,6 +35,9 @@ public class Aluno {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "aluno")
+    private List<Foto> fotos = new ArrayList<>();
 
     public Aluno(AlunoDTO alunoDTO) {
         this.usuario = new Usuario(alunoDTO);
