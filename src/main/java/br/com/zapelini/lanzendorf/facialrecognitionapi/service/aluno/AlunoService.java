@@ -109,6 +109,7 @@ public class AlunoService {
     public AlunoDashboardDTO getDadosDashboard() {
         AlunoDashboardDTO dados = new AlunoDashboardDTO();
         dados.setAlunosCadastrados(alunoRepository.count());
+        dados.setAlunosSemFotos(alunoRepository.countAlunosSemFotos());
         return dados;
     }
 

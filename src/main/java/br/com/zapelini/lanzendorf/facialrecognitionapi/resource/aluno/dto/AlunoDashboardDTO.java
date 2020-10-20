@@ -9,5 +9,6 @@ import lombok.Setter;
 public class AlunoDashboardDTO {
 
     private Long alunosCadastrados;
+    private Long alunosSemFotos;
 
 }
