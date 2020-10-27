@@ -114,7 +114,7 @@ public class AlunoService {
     }
 
     @Transactional
-    public String uploadFoto(Long idAluno, MultipartFile file) throws IOException, ApiException {
+    public void uploadFoto(Long idAluno, MultipartFile file) throws IOException, ApiException {
         Aluno aluno = getAluno(idAluno);
         String nomeOriginal = file.getOriginalFilename();
         int indexExtensao = nomeOriginal.lastIndexOf(".");
@@ -144,8 +144,6 @@ public class AlunoService {
 
         aluno.getFotos().add(foto);
         alunoRepository.save(aluno);
-
-        return foto.getNome() + "." + foto.getExtensao();
     }
 
     private String criarNomeFoto(Aluno aluno, Foto foto) {
@@ -185,9 +183,5 @@ public class AlunoService {
         fotoRepository.delete(foto);
     }
 
-    private InputStream getArquivoFisico(Foto foto) throws FileNotFoundException {
-        String nomeCompleto = foto.getNome() + "." + foto.getExtensao();
-        return new FileInputStream(PATH_FOTO + nomeCompleto);
-    }
 }
  
