@@ -166,7 +166,7 @@ public abstract class RecognitionUtil {
                 continue;
             org.bytedeco.opencv.opencv_core.Mat photo = imread(file.getAbsolutePath(), IMREAD_GRAYSCALE);
             int idP = Integer.parseInt(foto.getAluno().getIdAluno().toString());
-            opencv_imgproc.resize(photo, photo, new org.bytedeco.opencv.opencv_core.Size(200, 200));
+            opencv_imgproc.resize(photo, photo, new org.bytedeco.opencv.opencv_core.Size(1920, 1072));
 
             photos.put(counter, photo);
             labelsBuffer.put(counter, idP);

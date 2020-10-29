@@ -2,8 +2,7 @@ package br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma;
 
 import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.ApiException;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.RecursoInexistenteException;
-import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.AlunoDashboardDTO;
-import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma.dto.AulaDTO;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma.dto.CadastroAulaDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma.dto.AulaDashboardDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma.dto.TurmaDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.turma.TurmaService;
@@ -64,22 +63,22 @@ public class TurmaEndpoint {
     }
 
     @PostMapping("/{id}/aula")
-    public ResponseEntity<AulaDTO> criarAula(@PathVariable(name = "id") Long idTurma, @RequestBody AulaDTO aulaDTO) throws ApiException {
+    public ResponseEntity<CadastroAulaDTO> criarAula(@PathVariable(name = "id") Long idTurma, @RequestBody CadastroAulaDTO aulaDTO) throws ApiException {
         return ResponseEntity.ok(turmaService.criarAula(idTurma, aulaDTO));
     }
 
     @PutMapping("/aula/{id}")
-    public ResponseEntity<AulaDTO> atualizarTurma(@PathVariable(name = "id") Long idAula, @RequestBody AulaDTO aulaDTO) throws ApiException {
+    public ResponseEntity<CadastroAulaDTO> atualizarTurma(@PathVariable(name = "id") Long idAula, @RequestBody CadastroAulaDTO aulaDTO) throws ApiException {
         return ResponseEntity.ok(turmaService.atualizarTurma(idAula, aulaDTO));
     }
 
     @GetMapping("/{id}/aula")
-    public ResponseEntity<List<AulaDTO>> getAulas(@PathVariable(name = "id") Long idTurma) throws RecursoInexistenteException {
+    public ResponseEntity<List<CadastroAulaDTO>> getAulas(@PathVariable(name = "id") Long idTurma) throws RecursoInexistenteException {
         return ResponseEntity.ok(turmaService.getAulas(idTurma));
     }
 
     @GetMapping("/aula/{id}")
-    public ResponseEntity<AulaDTO> getAula(@PathVariable(name = "id") Long idAula) throws RecursoInexistenteException {
+    public ResponseEntity<CadastroAulaDTO> getAula(@PathVariable(name = "id") Long idAula) throws RecursoInexistenteException {
         return ResponseEntity.ok(turmaService.getAulaDTO(idAula));
     }
 

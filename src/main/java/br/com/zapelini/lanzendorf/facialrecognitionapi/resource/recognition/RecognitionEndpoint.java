@@ -1,18 +1,14 @@
 package br.com.zapelini.lanzendorf.facialrecognitionapi.resource.recognition;
 
 import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.ApiException;
-import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.AlunoDTO;
-import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.FotoDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.facial.RecognitionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 
 @RestController
@@ -30,11 +26,6 @@ public class RecognitionEndpoint {
     @PostMapping("/detectar")
     public void detectar(@RequestParam(name = "foto") MultipartFile foto) throws IOException, ApiException {
         recognitionService.detectar(foto);
-    }
-
-    @PostMapping("/detectar/turma")
-    public void detectarSala(@RequestParam(name = "foto") MultipartFile foto) throws IOException, ApiException {
-        recognitionService.detectarVariosRostos(foto);
     }
 
 }
