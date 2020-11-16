@@ -260,7 +260,7 @@ public abstract class RecognitionUtil {
             IntPointer rotulo = new IntPointer(1);
             DoublePointer confidence = new DoublePointer(1);
             recognizer.predict(faceCapturada, rotulo, confidence);
-
+            System.out.println("Confiança: " + confidence.get());
             Long idAluno = Long.parseLong(String.valueOf(rotulo.get(0)));
 
             if (idAluno > 0) {
