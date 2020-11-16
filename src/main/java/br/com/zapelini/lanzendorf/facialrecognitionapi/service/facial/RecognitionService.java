@@ -4,7 +4,9 @@ import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exceptio
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Aluno;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Foto;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.repository.foto.FotoRepository;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.FotoDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.aluno.AlunoService;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,14 +41,16 @@ public class RecognitionService {
         }
     }
 
-    public List<Aluno> detectarVariosRostos(MultipartFile foto) throws IOException, ApiException {
-        List<Long> idAlunos = RecognitionUtil.testMultipleFaces(multipartToFile(foto, foto.getOriginalFilename()));
+    public List<Aluno> detectarVariosRostos(Long idAula, MultipartFile foto) throws IOException, ApiException {
+        List<Long> idAlunos = RecognitionUtil.testMultipleFaces(idAula, multipartToFile(foto, foto.getOriginalFilename()));
         List<Aluno> alunos = new ArrayList<>();
         idAlunos.forEach(idALuno -> {
             try {
-                Aluno aluno = alunoService.getAluno(idALuno);
-                System.out.println("Aluno reconhecido: " + aluno.getUsuario().getNome());
-                alunos.add(aluno);
+                if (idALuno != -1) {
+                    Aluno aluno = alunoService.getAluno(idALuno);
+                    System.out.println("Aluno reconhecido: " + aluno.getUsuario().getNome());
+                    alunos.add(aluno);
+                }
             } catch (ApiException e) {
                 e.printStackTrace();
             }
@@ -59,5 +63,19 @@ public class RecognitionService {
         File convFile = new File(System.getProperty("java.io.tmpdir") + "/" + fileName);
         multipart.transferTo(convFile);
         return convFile;
+    }
+
+    public List<FotoDTO> buscarRostosNaoReconhecidos(Long idAula) throws IOException {
+        List<File> arquivos = RecognitionUtil.rostosNaoReconhecidos(idAula);
+
+        List<FotoDTO> fotos = new ArrayList<>();
+        for (File arquivo : arquivos) {
+            FotoDTO fotoDTO = new FotoDTO();
+            fotoDTO.setNome(arquivo.getName());
+            fotoDTO.setFoto(FileUtils.readFileToByteArray(arquivo));
+            fotos.add(fotoDTO);
+        }
+
+        return fotos;
     }
 }

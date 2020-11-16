@@ -20,4 +20,5 @@ public class FotoDTO {
         this.idFoto = foto.getIdFoto();
         this.nome = foto.getNome() + "." + foto.getExtensao();
     }
+
 }

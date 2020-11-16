@@ -7,10 +7,12 @@ import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Aula;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Turma;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.repository.aula.AulaRepository;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.repository.presenca.PresencaRepository;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.FotoDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aula.dto.AulaDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.facial.RecognitionService;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.turma.TurmaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -48,12 +50,17 @@ public class AulaService {
 
     public void detectarVariosRostos(Long idAula, MultipartFile foto) throws IOException, ApiException {
         Aula aula = getAula(idAula);
-        List<Aluno> alunos = recognitionService.detectarVariosRostos(foto);
+        List<Aluno> alunos = recognitionService.detectarVariosRostos(idAula, foto);
         aula.getPresencas().forEach(presenca -> alunos.forEach(aluno -> {
-            if(presenca.getAluno().getIdAluno().equals(aluno.getIdAluno())){
+            if (presenca.getAluno().getIdAluno().equals(aluno.getIdAluno())) {
                 presenca.setPresenca(Boolean.TRUE);
                 presencaRepository.save(presenca);
             }
         }));
+    }
+
+    public List<FotoDTO> buscarRostosNaoReconhecidos(Long idAula) throws IOException, RecursoInexistenteException {
+        Aula aula = getAula(idAula);
+        return recognitionService.buscarRostosNaoReconhecidos(idAula);
     }
 }

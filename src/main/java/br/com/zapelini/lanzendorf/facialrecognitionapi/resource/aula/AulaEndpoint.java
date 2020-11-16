@@ -2,6 +2,7 @@ package br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aula;
 
 import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.ApiException;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.RecursoInexistenteException;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.FotoDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aula.dto.AulaDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.aula.AulaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,11 @@ public class AulaEndpoint {
     public void detectarSala(@PathVariable("id") Long idAula,
                              @RequestParam(name = "foto") MultipartFile foto) throws IOException, ApiException {
         aulaService.detectarVariosRostos(idAula, foto);
+    }
+
+    @GetMapping("/{id}/reconhecimento/nao-reconhecido")
+    public ResponseEntity<List<FotoDTO>> buscarRostosNaoReconhecidos(@PathVariable("id") Long idAula) throws IOException, ApiException {
+        return ResponseEntity.ok(aulaService.buscarRostosNaoReconhecidos(idAula));
     }
 
 }

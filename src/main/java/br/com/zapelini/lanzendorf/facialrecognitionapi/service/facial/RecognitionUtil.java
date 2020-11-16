@@ -13,7 +13,6 @@ import org.datavec.image.loader.NativeImageLoader;
 import org.deeplearning4j.nn.graph.ComputationGraph;
 import org.deeplearning4j.nn.transferlearning.TransferLearningHelper;
 import org.deeplearning4j.zoo.PretrainedType;
-import org.deeplearning4j.zoo.ZooModel;
 import org.deeplearning4j.zoo.model.VGG16;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
@@ -31,9 +30,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import static org.bytedeco.opencv.global.opencv_core.CV_32SC1;
@@ -46,9 +44,10 @@ import static org.bytedeco.opencv.helper.opencv_imgcodecs.cvLoadImage;
 
 public abstract class RecognitionUtil {
 
-    private static final String PATH_FOTO = "C:\\facial-api\\";
-    private static final String PATH_CLASSIFIER = PATH_FOTO + "classifierLBPH.yml";
-    private static final String PATH_FOTO_TREINAMENTO = PATH_FOTO + "treinamento\\";
+    private static final String PATH_FOTO = "C:\\facial-api\\upload\\";
+    private static final String PATH_CLASSIFIER = "C:\\facial-api\\classifierLBPH.yml";
+    private static final String PATH_FOTO_TREINAMENTO = "C:\\facial-api\\treinamento\\";
+    private static final String PATH_FOTO_AULA = "C:\\facial-api\\aula\\";
 
     private static final double fatorEscala = 1.05;
     private static final int minimoVizinhos = 7;
@@ -190,7 +189,7 @@ public abstract class RecognitionUtil {
         classifier.load("./src/main/resources/recognition/haarcascade_frontalface_alt.xml");
         org.opencv.core.Mat fotoMat = Imgcodecs.imread(file.getAbsolutePath());
 
-        Imgcodecs.imwrite(PATH_FOTO_TREINAMENTO.concat("RECONHECIDO.png"), fotoMat);
+        Imgcodecs.imwrite(PATH_FOTO_AULA.concat("RECONHECIDO.png"), fotoMat);
 
         MatOfRect rostosDetectados = new MatOfRect();
         classifier.detectMultiScale(fotoMat, rostosDetectados, fatorEscala, minimoVizinhos, 0, minFaces, maxFaces);
@@ -203,7 +202,7 @@ public abstract class RecognitionUtil {
             Imgcodecs.imwrite(PATH_FOTO_TREINAMENTO.concat("RECONHECIDO.png"), rostoReconhecido);
             org.bytedeco.opencv.opencv_core.Mat faceCapturada = imread(PATH_FOTO_TREINAMENTO.concat("RECONHECIDO.png"), IMREAD_GRAYSCALE);
 
-            opencv_imgproc.resize(faceCapturada, faceCapturada, new org.bytedeco.opencv.opencv_core.Size(200, 200));
+            opencv_imgproc.resize(faceCapturada, faceCapturada, new org.bytedeco.opencv.opencv_core.Size(1000, 1000));
             IntPointer rotulo = new IntPointer(1);
             DoublePointer confidence = new DoublePointer(1);
             recognizer.predict(faceCapturada, rotulo, confidence);
@@ -218,7 +217,15 @@ public abstract class RecognitionUtil {
         return new File(pathFoto);
     }
 
-    public static List<Long> testMultipleFaces(File file) {
+    public static List<Long> testMultipleFaces(Long idAula, File file) {
+        String pathAula = PATH_FOTO_AULA.concat(idAula.toString()).concat("\\");
+        String pathNaoReconhecido = pathAula.concat("nao-reconhecido\\");
+
+        File path = new File(pathNaoReconhecido);
+
+        if (!path.exists())
+            path.mkdirs();
+
         LBPHFaceRecognizer recognizer = LBPHFaceRecognizer.create();
         recognizer.read(PATH_CLASSIFIER);
         IplImage testImage = cvLoadImage(file.getAbsolutePath());
@@ -230,7 +237,9 @@ public abstract class RecognitionUtil {
         classifier.load("./src/main/resources/recognition/haarcascade_frontalface_alt.xml");
         org.opencv.core.Mat fotoMat = Imgcodecs.imread(file.getAbsolutePath());
 
-        Imgcodecs.imwrite(PATH_FOTO_TREINAMENTO.concat("RECONHECIDO.png"), fotoMat);
+        Imgcodecs.imwrite(pathAula.concat("captura_aula.png"), fotoMat);
+
+        pathNaoReconhecido = pathNaoReconhecido.concat("{id}").concat("_aluno.png");
 
         MatOfRect rostosDetectados = new MatOfRect();
         classifier.detectMultiScale(fotoMat, rostosDetectados, fatorEscala, minimoVizinhos, 0, minFaces, maxFaces);
@@ -238,18 +247,48 @@ public abstract class RecognitionUtil {
                 rostosDetectados.toArray().length));
 
         List<Long> idAlunos = new ArrayList<>();
-        for (Rect reconhecido : rostosDetectados.toArray()) {
-            org.opencv.core.Mat rostoReconhecido = fotoMat.submat(reconhecido);
-            Imgcodecs.imwrite(PATH_FOTO_TREINAMENTO.concat("RECONHECIDO.png"), rostoReconhecido);
-            org.bytedeco.opencv.opencv_core.Mat faceCapturada = imread(PATH_FOTO_TREINAMENTO.concat("RECONHECIDO.png"), IMREAD_GRAYSCALE);
+        Integer count = 0;
 
-            opencv_imgproc.resize(faceCapturada, faceCapturada, new org.bytedeco.opencv.opencv_core.Size(200, 200));
+        for (Rect detectado : rostosDetectados.toArray()) {
+            count++;
+            String pathDetectado = pathNaoReconhecido.replace("{id}", count.toString());
+            org.opencv.core.Mat rostoDetectado = fotoMat.submat(detectado);
+            Imgcodecs.imwrite(pathDetectado, rostoDetectado);
+            org.bytedeco.opencv.opencv_core.Mat faceCapturada = imread(pathDetectado, IMREAD_GRAYSCALE);
+
+            opencv_imgproc.resize(faceCapturada, faceCapturada, new org.bytedeco.opencv.opencv_core.Size(1000, 1000));
             IntPointer rotulo = new IntPointer(1);
             DoublePointer confidence = new DoublePointer(1);
             recognizer.predict(faceCapturada, rotulo, confidence);
-            idAlunos.add(Long.parseLong(String.valueOf(rotulo.get(0))));
-        }
 
+            Long idAluno = Long.parseLong(String.valueOf(rotulo.get(0)));
+
+            if (idAluno > 0) {
+                File apagar = new File(pathDetectado);
+                apagar.delete();
+            }
+
+            idAlunos.add(idAluno);
+        }
         return idAlunos;
+    }
+
+    public static List<File> rostosNaoReconhecidos(Long idAula) {
+        String pathNaoReconhecido = PATH_FOTO_AULA.concat(idAula.toString()).concat("\\nao-reconhecido\\");
+        File[] arquivos = new File(pathNaoReconhecido).listFiles();
+
+        if (arquivos == null)
+            return new ArrayList<>();
+        else
+            return Arrays.asList(arquivos);
+
+
+    }
+
+    public static void removerFotoNaoReconhecida(Long idAula, String nome) {
+        String pathNaoReconhecido = PATH_FOTO_AULA.concat(idAula.toString()).concat("\\nao-reconhecido\\");
+        File file = new File(pathNaoReconhecido.concat(nome));
+        if(file.exists())
+            file.delete();
     }
 }
