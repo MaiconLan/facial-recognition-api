@@ -17,7 +17,7 @@ import java.time.LocalTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AulaDTO {
+public class CadastroAulaDTO {
 
     private Long id;
     private String title;
@@ -29,7 +29,7 @@ public class AulaDTO {
     @JsonDeserialize(using = LocalTimeDeserializer.class)
     private LocalTime end;
 
-    public AulaDTO(Aula aula) {
+    public CadastroAulaDTO(Aula aula) {
         this.id = aula.getIdAula();
         this.title = aula.getTitulo();
         this.date = aula.getInicio().toLocalDate();

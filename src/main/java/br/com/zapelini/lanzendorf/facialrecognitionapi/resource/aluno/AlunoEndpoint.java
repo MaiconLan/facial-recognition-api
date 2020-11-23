@@ -88,4 +88,9 @@ public class AlunoEndpoint {
         alunoService.excluirFoto(idFoto);
     }
 
+    @PostMapping("/aula/{id}/foto")
+    @ResponseStatus(code = HttpStatus.OK)
+    public void uploadFotos(@PathVariable(name = "id") Long idAula, @RequestBody List<FotoDTO> fotos) throws IOException, ApiException {
+        alunoService.uploadFotos(idAula, fotos);
+    }
 }

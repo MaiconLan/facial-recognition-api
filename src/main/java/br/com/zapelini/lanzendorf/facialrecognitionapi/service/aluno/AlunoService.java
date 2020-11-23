@@ -10,6 +10,7 @@ import br.com.zapelini.lanzendorf.facialrecognitionapi.repository.foto.FotoRepos
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.AlunoDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.AlunoDashboardDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.FotoDTO;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.service.facial.RecognitionUtil;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.usuario.UsuarioService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,22 +23,18 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.Objects;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
 public class AlunoService {
 
-    private static final String PATH_FOTO = "C:\\facial-api\\";
+    private static final String PATH_FOTO = "C:\\facial-api\\upload\\";
 
     @Autowired
     private AlunoRepository alunoRepository;
@@ -87,7 +84,7 @@ public class AlunoService {
                 .collect(Collectors.toList());
 
         return new PageImpl<>(alunos,
-                              pageable,
+                pageable,
                 alunoRepository.filterCount(nome, email, matricula)
         );
     }
@@ -101,7 +98,7 @@ public class AlunoService {
     }
 
     private void validarExclusao(Aluno aluno) throws ApiException {
-        if(alunoRepository.hasTurma(aluno.getIdAluno())){
+        if (alunoRepository.hasTurma(aluno.getIdAluno())) {
             throw new ApiException("Este aluno está vinculado em ao menos uma turma");
         }
     }
@@ -114,7 +111,7 @@ public class AlunoService {
     }
 
     @Transactional
-    public String uploadFoto(Long idAluno, MultipartFile file) throws IOException, ApiException {
+    public void uploadFoto(Long idAluno, MultipartFile file) throws IOException, ApiException {
         Aluno aluno = getAluno(idAluno);
         String nomeOriginal = file.getOriginalFilename();
         int indexExtensao = nomeOriginal.lastIndexOf(".");
@@ -134,7 +131,7 @@ public class AlunoService {
         File path = new File(PATH_FOTO);
 
         if (!path.exists()) {
-            path.mkdir();
+            path.mkdirs();
         }
 
         OutputStream outputStream = new FileOutputStream(PATH_FOTO + nome + "." + extensao);
@@ -144,8 +141,6 @@ public class AlunoService {
 
         aluno.getFotos().add(foto);
         alunoRepository.save(aluno);
-
-        return foto.getNome() + "." + foto.getExtensao();
     }
 
     private String criarNomeFoto(Aluno aluno, Foto foto) {
@@ -155,10 +150,10 @@ public class AlunoService {
     public List<FotoDTO> getFotos(Long idAluno) {
         List<Foto> fotos = fotoRepository.findByIdAluno(idAluno);
         return fotos.stream().map(foto -> {
-                String nomeCompleto = foto.getNome() + "." + foto.getExtensao();
-                FotoDTO fotoDTO = new FotoDTO();
-                fotoDTO.setIdFoto(foto.getIdFoto());
-                fotoDTO.setNome(nomeCompleto);
+            String nomeCompleto = foto.getNome() + "." + foto.getExtensao();
+            FotoDTO fotoDTO = new FotoDTO();
+            fotoDTO.setIdFoto(foto.getIdFoto());
+            fotoDTO.setNome(nomeCompleto);
 
             try {
                 InputStream inputStream = new FileInputStream(PATH_FOTO + nomeCompleto);
@@ -178,16 +173,47 @@ public class AlunoService {
 
         File file = new File(PATH_FOTO + foto.getNome() + "." + foto.getExtensao());
 
-        if(file.exists()) {
+        if (file.exists()) {
             file.delete();
         }
 
         fotoRepository.delete(foto);
     }
 
-    private InputStream getArquivoFisico(Foto foto) throws FileNotFoundException {
-        String nomeCompleto = foto.getNome() + "." + foto.getExtensao();
-        return new FileInputStream(PATH_FOTO + nomeCompleto);
+    public void uploadFotos(Long idAula, List<FotoDTO> fotos) throws ApiException, IOException {
+        for (FotoDTO fotoDTO : fotos) {
+            String nomeOriginal = fotoDTO.getNome();
+            int indexExtensao = nomeOriginal.lastIndexOf(".");
+            String extensao = nomeOriginal.substring(indexExtensao + 1);
+
+            if (fotoDTO.getAluno() == null)
+                continue;
+
+            Aluno aluno = getAluno(fotoDTO.getAluno().getIdAluno());
+            Foto foto = new Foto();
+            foto.setAluno(aluno);
+            foto.setExtensao(extensao);
+            foto = fotoRepository.save(foto);
+
+            String nome = criarNomeFoto(aluno, foto);
+
+            foto.setNome(nome);
+            fotoRepository.save(foto);
+
+            File path = new File(PATH_FOTO);
+            if (!path.exists())
+                path.mkdirs();
+
+            OutputStream outputStream = new FileOutputStream(PATH_FOTO + nome + "." + extensao);
+
+            outputStream.write(fotoDTO.getFoto());
+            outputStream.close();
+
+            aluno.getFotos().add(foto);
+            alunoRepository.save(aluno);
+
+            RecognitionUtil.removerFotoNaoReconhecida(idAula, fotoDTO.getNome());
+        }
     }
 }
  
