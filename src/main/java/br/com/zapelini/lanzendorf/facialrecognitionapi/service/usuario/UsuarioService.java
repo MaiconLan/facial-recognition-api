@@ -1,6 +1,7 @@
 package br.com.zapelini.lanzendorf.facialrecognitionapi.service.usuario;
 
 import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.ApiException;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.RecursoInexistenteException;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Usuario;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.repository.usuario.UsuarioRepository;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.usuario.dto.UsuarioDTO;
@@ -44,6 +45,10 @@ public class UsuarioService {
 
         usuario.setSenha(senhaUtil.criptografar(usuarioDTO.getSenha()));
         return usuarioRepository.save(usuario);
+    }
+
+    public Usuario findUsuario(Long idUsuario) throws RecursoInexistenteException {
+        return usuarioRepository.findById(idUsuario).orElseThrow(() -> new RecursoInexistenteException("Usuário"));
     }
 
 }

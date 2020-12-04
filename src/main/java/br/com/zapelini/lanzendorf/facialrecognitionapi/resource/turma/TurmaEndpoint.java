@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,13 +32,19 @@ public class TurmaEndpoint {
     @Autowired
     private TurmaService turmaService;
 
-    @GetMapping
+    @GetMapping("/filtro")
     public ResponseEntity<Page<TurmaDTO>> filtrar(Pageable pageable,
                                                   @PathParam("materia") String materia,
                                                   @PathParam("periodo") String periodo,
                                                   @PathParam("tipo") String tipo,
                                                   @PathParam("finalizada") Boolean finalizada) {
         Page<TurmaDTO> turmas = turmaService.filtrar(pageable, materia, periodo, tipo, finalizada);
+        return !turmas.isEmpty() ? ResponseEntity.ok(turmas) : ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<TurmaDTO>> listar(@RequestHeader Long idUsuario) throws RecursoInexistenteException {
+        List<TurmaDTO> turmas = turmaService.listar(idUsuario);
         return !turmas.isEmpty() ? ResponseEntity.ok(turmas) : ResponseEntity.noContent().build();
     }
 
@@ -90,6 +97,12 @@ public class TurmaEndpoint {
     @GetMapping("/dashboard")
     public ResponseEntity<AulaDashboardDTO> getDadosDashboard() {
         return ResponseEntity.ok(turmaService.getDadosDashboard());
+    }
+
+    @PutMapping("/{id}/exportacao")
+    public ResponseEntity<?> exportarAulas(@PathVariable(name = "id") Long idTurma,
+                                           @PathParam("formato") String formato) {
+        return null;
     }
 
 }

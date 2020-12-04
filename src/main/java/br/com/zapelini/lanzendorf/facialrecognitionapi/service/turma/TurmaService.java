@@ -8,6 +8,7 @@ import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Presenca;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Professor;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Tipo;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Turma;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Usuario;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.repository.aula.AulaRepository;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.repository.presenca.PresencaRepository;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.repository.turma.TurmaRepository;
@@ -18,6 +19,7 @@ import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma.dto.Cadast
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma.dto.TurmaDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.aluno.AlunoService;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.professor.ProfessorService;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.service.usuario.UsuarioService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -46,6 +48,9 @@ public class TurmaService {
 
     @Autowired
     private PresencaRepository presencaRepository;
+
+    @Autowired
+    private UsuarioService usuarioService;
 
     public TurmaDTO criarTurma(TurmaDTO turmaDTO) throws ApiException {
         Turma turma = new Turma(turmaDTO);
@@ -168,5 +173,24 @@ public class TurmaService {
         AulaDashboardDTO dados = new AulaDashboardDTO();
         dados.setAulasDoDia(aulaRepository.aulasdoDia());
         return dados;
+    }
+
+    public List<TurmaDTO> listar(Long idUsuario) throws RecursoInexistenteException {
+        Usuario usuario = usuarioService.findUsuario(idUsuario);
+
+        if(usuario.isProfessor()) {
+            return turmaRepository.findAllByProfessor(usuario.getProfessor())
+                    .stream()
+                    .map(TurmaDTO::new)
+                    .collect(Collectors.toList());
+
+        } else if (usuario.isCoordenador() || usuario.isAdministrador()) {
+            return turmaRepository.findAll()
+                    .stream()
+                    .map(TurmaDTO::new)
+                    .collect(Collectors.toList());
+        }
+
+        return new ArrayList<>();
     }
 }
