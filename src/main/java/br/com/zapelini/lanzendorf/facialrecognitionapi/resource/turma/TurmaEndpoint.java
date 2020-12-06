@@ -2,14 +2,15 @@ package br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma;
 
 import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.ApiException;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.RecursoInexistenteException;
-import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma.dto.CadastroAulaDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma.dto.AulaDashboardDTO;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma.dto.CadastroAulaDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma.dto.TurmaDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.turma.TurmaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -99,10 +100,10 @@ public class TurmaEndpoint {
         return ResponseEntity.ok(turmaService.getDadosDashboard());
     }
 
-    @PutMapping("/{id}/exportacao")
-    public ResponseEntity<?> exportarAulas(@PathVariable(name = "id") Long idTurma,
-                                           @PathParam("formato") String formato) {
-        return null;
+    @PutMapping(value = "/{id}/exportacao", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<byte[]> exportarAulas(@PathVariable(name = "id") Long idTurma,
+                                                @PathParam("formato") String formato) throws Exception {
+        return ResponseEntity.ok(turmaService.exportarAulas(idTurma, formato));
     }
 
 }

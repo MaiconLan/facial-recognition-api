@@ -13,13 +13,18 @@ import br.com.zapelini.lanzendorf.facialrecognitionapi.repository.aula.AulaRepos
 import br.com.zapelini.lanzendorf.facialrecognitionapi.repository.presenca.PresencaRepository;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.repository.turma.TurmaRepository;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.AlunoDTO;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aula.dto.AulaDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.professor.dto.ProfessorDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma.dto.AulaDashboardDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma.dto.CadastroAulaDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma.dto.TurmaDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.aluno.AlunoService;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.service.freemarker.FreemarkerService;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.professor.ProfessorService;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.service.turma.dto.ExportacaoTurmaDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.usuario.UsuarioService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,8 +32,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,6 +61,12 @@ public class TurmaService {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private ObjectMapper mapper;
+
+    @Autowired
+    private FreemarkerService freemarkerService;
 
     public TurmaDTO criarTurma(TurmaDTO turmaDTO) throws ApiException {
         Turma turma = new Turma(turmaDTO);
@@ -178,7 +194,7 @@ public class TurmaService {
     public List<TurmaDTO> listar(Long idUsuario) throws RecursoInexistenteException {
         Usuario usuario = usuarioService.findUsuario(idUsuario);
 
-        if(usuario.isProfessor()) {
+        if (usuario.isProfessor()) {
             return turmaRepository.findAllByProfessor(usuario.getProfessor())
                     .stream()
                     .map(TurmaDTO::new)
@@ -192,5 +208,42 @@ public class TurmaService {
         }
 
         return new ArrayList<>();
+    }
+
+    public byte[] exportarAulas(Long idTurma, String formato) throws Exception {
+        return switch (formato) {
+            case "json" -> exportarAulasJson(idTurma);
+            case "pdf" -> exportarAulasPDF(idTurma);
+            default -> throw new ApiException("Formato não informado");
+        };
+    }
+
+    private byte[] exportarAulasJson(Long idTurma) throws RecursoInexistenteException, IOException {
+        Turma turma = getTurma(idTurma);
+        List<Aula> aulas = aulaRepository.findByTurma(turma);
+
+        ExportacaoTurmaDTO turmaDTO = new ExportacaoTurmaDTO(turma);
+        turmaDTO.setAulas(aulas.stream().map(AulaDTO::new).collect(Collectors.toList()));
+        turmaDTO.setAlunos(turma.getAlunos().stream().map(AlunoDTO::new).collect(Collectors.toList()));
+
+        File tmpFile = File.createTempFile("aula", ".json");
+        FileWriter writer = new FileWriter(tmpFile);
+        writer.write(mapper.writeValueAsString(turmaDTO));
+        writer.close();
+
+        return FileUtils.readFileToByteArray(tmpFile);
+    }
+
+    private byte[] exportarAulasPDF(Long idTurma) throws Exception {
+        Turma turma = getTurma(idTurma);
+        List<Aula> aulas = aulaRepository.findByTurma(turma);
+        List<Aluno> alunos = turma.getAlunos();
+
+        Map<String, Object> parametros = new HashMap<>();
+        parametros.put("turma", turma);
+        parametros.put("aulas", aulas);
+        parametros.put("alunos", alunos);
+
+        return freemarkerService.gerarArquivo("aula.ftl", parametros);
     }
 }
