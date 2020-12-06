@@ -1,6 +1,10 @@
 <html>
     <head>
         <style>
+            body {
+
+            }
+
             table, th, td {
                 border: 1px solid black;
                 border-collapse: collapse;
@@ -36,11 +40,7 @@
                             <#list aula.presencas as presenca>
                                 <tr>
                                     <td>${presenca.aluno}</td>
-                                    <#if presenca.presenca>
-                                        <td>Sim</td>
-                                    <#else>
-                                        <td>Não</td>
-                                    </#if>
+                                    <td>${presenca.presenca}</td>
                                 </tr>
                             </#list>
                         </table>
