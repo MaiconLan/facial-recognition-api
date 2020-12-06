@@ -10,14 +10,22 @@ import br.com.zapelini.lanzendorf.facialrecognitionapi.repository.presenca.Prese
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.FotoDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aula.dto.AulaDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.facial.RecognitionService;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.service.freemarker.FreemarkerService;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.turma.TurmaService;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.service.turma.dto.ExportacaoAulaPdfDTO;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.service.turma.dto.ExportacaoTurmaPdfDTO;
+import com.lowagie.text.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,6 +42,9 @@ public class AulaService {
 
     @Autowired
     private PresencaRepository presencaRepository;
+
+    @Autowired
+    private FreemarkerService freemarkerService;
 
     public Aula getAula(Long idAula) throws RecursoInexistenteException {
         return aulaRepository.findById(idAula).orElseThrow(() -> new RecursoInexistenteException("Aula não encontrada"));
@@ -62,5 +73,18 @@ public class AulaService {
     public List<FotoDTO> buscarRostosNaoReconhecidos(Long idAula) throws IOException, RecursoInexistenteException {
         Aula aula = getAula(idAula);
         return recognitionService.buscarRostosNaoReconhecidos(idAula);
+    }
+
+    public byte[] exportarAulas(Long idAula) throws Exception {
+        Aula aula = getAula(idAula);
+        Turma turma = aula.getTurma();
+
+        ExportacaoTurmaPdfDTO turmaDTO = new ExportacaoTurmaPdfDTO(turma);
+        turmaDTO.setAulas(Collections.singletonList(new ExportacaoAulaPdfDTO(aula)));
+
+        Map<String, Object> parametros = new HashMap<>();
+        parametros.put("turma", turmaDTO);
+
+        return freemarkerService.gerarArquivo("aula.ftl", parametros);
     }
 }
