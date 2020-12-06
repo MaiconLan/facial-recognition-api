@@ -3,6 +3,7 @@ package br.com.zapelini.lanzendorf.facialrecognitionapi.service.freemarker;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.config.VariavelAmbiente;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.ApiException;
 import com.lowagie.text.DocumentException;
+import freemarker.core.HTMLOutputFormat;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -28,6 +29,7 @@ public class FreemarkerService {
             cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);//.RETHROW
             cfg.setClassicCompatible(true);
             Template temp = cfg.getTemplate(arquivo);
+            cfg.setOutputFormat(HTMLOutputFormat.INSTANCE);
 
             StringWriter stringWriter = new StringWriter();
             temp.process(parametros, stringWriter);

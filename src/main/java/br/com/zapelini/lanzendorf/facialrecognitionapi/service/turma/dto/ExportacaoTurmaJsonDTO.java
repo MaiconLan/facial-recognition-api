@@ -15,7 +15,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class ExportacaoTurmaDTO {
+public class ExportacaoTurmaJsonDTO {
 
 
     private Long idTurma;
@@ -36,7 +36,7 @@ public class ExportacaoTurmaDTO {
     private List<AlunoDTO> alunos = new ArrayList<>();
     private List<AulaDTO> aulas = new ArrayList<>();
 
-    public ExportacaoTurmaDTO(Turma turma) {
+    public ExportacaoTurmaJsonDTO(Turma turma) {
         this.idTurma = turma.getIdTurma();
         this.materia = turma.getMateria();
         this.ano = turma.getAno();

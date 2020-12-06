@@ -21,7 +21,9 @@ import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.turma.dto.TurmaD
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.aluno.AlunoService;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.freemarker.FreemarkerService;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.professor.ProfessorService;
-import br.com.zapelini.lanzendorf.facialrecognitionapi.service.turma.dto.ExportacaoTurmaDTO;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.service.turma.dto.ExportacaoAulaPdfDTO;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.service.turma.dto.ExportacaoTurmaPdfDTO;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.service.turma.dto.ExportacaoTurmaJsonDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.usuario.UsuarioService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
@@ -222,7 +224,7 @@ public class TurmaService {
         Turma turma = getTurma(idTurma);
         List<Aula> aulas = aulaRepository.findByTurma(turma);
 
-        ExportacaoTurmaDTO turmaDTO = new ExportacaoTurmaDTO(turma);
+        ExportacaoTurmaJsonDTO turmaDTO = new ExportacaoTurmaJsonDTO(turma);
         turmaDTO.setAulas(aulas.stream().map(AulaDTO::new).collect(Collectors.toList()));
         turmaDTO.setAlunos(turma.getAlunos().stream().map(AlunoDTO::new).collect(Collectors.toList()));
 
@@ -237,12 +239,13 @@ public class TurmaService {
     private byte[] exportarAulasPDF(Long idTurma) throws Exception {
         Turma turma = getTurma(idTurma);
         List<Aula> aulas = aulaRepository.findByTurma(turma);
-        List<Aluno> alunos = turma.getAlunos();
+
+
+        ExportacaoTurmaPdfDTO turmaDTO = new ExportacaoTurmaPdfDTO(turma);
+        turmaDTO.setAulas(aulas.stream().map(ExportacaoAulaPdfDTO::new).collect(Collectors.toList()));
 
         Map<String, Object> parametros = new HashMap<>();
-        parametros.put("turma", turma);
-        parametros.put("aulas", aulas);
-        parametros.put("alunos", alunos);
+        parametros.put("turma", turmaDTO);
 
         return freemarkerService.gerarArquivo("aula.ftl", parametros);
     }
