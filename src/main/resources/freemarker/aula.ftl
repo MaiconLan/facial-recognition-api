@@ -5,6 +5,7 @@
                 border: 1px solid black;
                 border-collapse: collapse;
                 padding: 5px;
+                width: 80%;
             }
 
             .aula {
@@ -13,9 +14,6 @@
                 padding: 5px;
             }
 
-            table {
-                width: 50%;
-            }
         </style>
     </head>
     <body>
@@ -30,12 +28,12 @@
                         <h3>${aula.titulo} - ${aula.data}</h3>
                         <h4>Horário: ${aula.inicio} a ${aula.termino}</h4>
 
-                        <#list aula.presencas as presenca>
-                            <table keep-together.within-page="always">
-                                <tr>
-                                    <th>Nome</th>
-                                    <th>Presente</th>
-                                </tr>
+                        <table keep-together.within-page="always">
+                            <tr>
+                                <th>Nome</th>
+                                <th>Presente</th>
+                            </tr>
+                            <#list aula.presencas as presenca>
                                 <tr>
                                     <td>${presenca.aluno}</td>
                                     <#if presenca.presenca>
@@ -44,8 +42,8 @@
                                         <td>Não</td>
                                     </#if>
                                 </tr>
-                            </table>
-                        </#list>
+                            </#list>
+                        </table>
                     </div>
                 </#list>
             </fieldset>
