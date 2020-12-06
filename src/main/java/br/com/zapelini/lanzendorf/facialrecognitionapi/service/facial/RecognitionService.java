@@ -1,5 +1,6 @@
 package br.com.zapelini.lanzendorf.facialrecognitionapi.service.facial;
 
+import br.com.zapelini.lanzendorf.facialrecognitionapi.config.VariavelAmbiente;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exception.ApiException;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Aluno;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Foto;
@@ -60,7 +61,7 @@ public class RecognitionService {
     }
 
     public static File multipartToFile(MultipartFile multipart, String fileName) throws IllegalStateException, IOException {
-        File convFile = new File(System.getProperty("java.io.tmpdir") + "/" + fileName);
+        File convFile = new File(VariavelAmbiente.DIRETORIO_TEMPORARIO + "/" + fileName);
         multipart.transferTo(convFile);
         return convFile;
     }
