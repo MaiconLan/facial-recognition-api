@@ -128,17 +128,21 @@ public class TurmaService {
         return new TurmaDTO(getTurma(idTurma));
     }
 
-    public Page<TurmaDTO> filtrar(Pageable pageable, String materia, String periodo, String tipo, Boolean finalizada) {
+    public Page<TurmaDTO> filtrar(Pageable pageable, Long idUsuario, String materia, String periodo, String tipo, Boolean finalizada) throws RecursoInexistenteException {
         Tipo tipoEnum = Tipo.parse(tipo);
 
-        List<TurmaDTO> turmas = turmaRepository.filter(pageable, materia, periodo, tipoEnum, finalizada)
+        Usuario usuario = usuarioService.findUsuario(idUsuario);
+
+        Professor professor = usuario.getProfessor();
+
+        List<TurmaDTO> turmas = turmaRepository.filter(pageable, professor, materia, periodo, tipoEnum, finalizada)
                 .stream()
                 .map(TurmaDTO::new)
                 .collect(Collectors.toList());
 
         return new PageImpl<>(turmas,
                 pageable,
-                turmaRepository.filterCount(materia, periodo, tipoEnum, finalizada)
+                turmaRepository.filterCount(materia, professor, periodo, tipoEnum, finalizada)
         );
     }
 
