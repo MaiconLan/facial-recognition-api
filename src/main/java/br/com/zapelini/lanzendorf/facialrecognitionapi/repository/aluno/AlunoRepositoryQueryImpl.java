@@ -20,7 +20,7 @@ public class AlunoRepositoryQueryImpl implements AlunoRepositoryQuery {
         String sql = "SELECT a FROM Aluno a " +
                 "JOIN a.usuario u " +
                 "WHERE a.idAluno != NULL ";
-        filterSql(sql, nome, email, matricula);
+        sql = filterSql(sql, nome, email, matricula);
         Query query = entityManager.createQuery(sql, Aluno.class);
         adicionarPaginacao(query, pageable);
         addParamFilter(query, nome, email, matricula);
@@ -34,10 +34,33 @@ public class AlunoRepositoryQueryImpl implements AlunoRepositoryQuery {
                 "JOIN usuario u ON a.id_usuario = u.id_usuario " +
                 "WHERE true ";
 
-        filterSql(sql, nome, email, matricula);
+        sql = filterSql(sql, nome, email, matricula);
         Query query = entityManager.createNativeQuery(sql);
         addParamFilter(query, nome, email, matricula);
         return ((BigInteger) query.getSingleResult()).intValue();
+    }
+
+    @Override
+    public Boolean hasTurma(Long idAluno) {
+        String sql = "SELECT COUNT(t) FROM Turma t " +
+                "JOIN t.alunos a " +
+                "WHERE a.idAluno = :idAluno ";
+
+        return entityManager.createQuery(sql, Long.class)
+                .setParameter("idAluno", idAluno)
+                .setMaxResults(1)
+                .getSingleResult() > 0;
+    }
+
+    @Override
+    public Long countAlunosSemFotos() {
+        String sql = "SELECT COUNT(a) FROM Aluno a " +
+                "LEFT JOIN a.fotos f " +
+                "WHERE f.idFoto IS NULL ";
+
+        return entityManager.createQuery(sql, Long.class)
+                .setMaxResults(1)
+                .getSingleResult();
     }
 
 

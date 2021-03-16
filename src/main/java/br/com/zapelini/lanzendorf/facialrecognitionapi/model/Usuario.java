@@ -5,7 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 @Data
 @Entity
@@ -27,6 +33,18 @@ public class Usuario {
 
     private String senha;
 
+    @OneToOne(mappedBy = "usuario")
+    private Professor professor;
+
+    @OneToOne(mappedBy = "usuario")
+    private Aluno aluno;
+
+    @OneToOne(mappedBy = "usuario")
+    private Coordenador coordenador;
+
+    @OneToOne(mappedBy = "usuario")
+    private Administrador administrador;
+
     public Usuario(UsuarioDTO usuario) {
         this.nome = usuario.getNome();
         this.email = usuario.getEmail();
@@ -34,4 +52,19 @@ public class Usuario {
         this.senha = usuario.getSenha();
     }
 
+    public boolean isProfessor() {
+        return professor != null;
+    }
+
+    public boolean isCoordenador() {
+        return coordenador != null;
+    }
+
+    public boolean isAdministrador() {
+        return administrador != null;
+    }
+
+    public boolean isAluno() {
+        return aluno != null;
+    }
 }

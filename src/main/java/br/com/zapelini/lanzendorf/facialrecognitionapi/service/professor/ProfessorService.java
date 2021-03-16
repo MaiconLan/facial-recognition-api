@@ -4,10 +4,15 @@ import br.com.zapelini.lanzendorf.facialrecognitionapi.exceptionhandler.exceptio
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Professor;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.model.Usuario;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.repository.professor.ProfessorRepository;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.aluno.dto.AlunoDashboardDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.professor.dto.ProfessorDTO;
+import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.professor.dto.ProfessorDashboardDTO;
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.usuario.UsuarioService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
@@ -55,7 +60,35 @@ public class ProfessorService {
         return new ProfessorDTO(professor);
     }
 
-    public List<ProfessorDTO> getProfessores() {
-        return professorRepository.findAll().stream().map(ProfessorDTO::new).collect(Collectors.toList());
+    public Page<ProfessorDTO> filtrar(Pageable pageable, String nome, String email) {
+        List<ProfessorDTO> professores = professorRepository.filter(pageable, nome, email)
+                .stream()
+                .map(ProfessorDTO::new)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(professores,
+                pageable,
+                professorRepository.filterCount(nome, email)
+        );
+    }
+
+    public void excluir(Long idProfessor) throws ApiException {
+        Professor professor = getProfessor(idProfessor);
+
+        validarExclusao(professor);
+
+        professorRepository.delete(professor);
+    }
+
+    private void validarExclusao(Professor professor) throws ApiException {
+        if(professorRepository.hasTurma(professor.getIdProfessor())){
+            throw new ApiException("Este professor está vinculado em ao menos uma turma");
+        }
+    }
+
+    public ProfessorDashboardDTO getDadosDashboard() {
+        ProfessorDashboardDTO dados = new ProfessorDashboardDTO();
+        dados.setProfessoresCadastrados(professorRepository.count());
+        return dados;
     }
 }

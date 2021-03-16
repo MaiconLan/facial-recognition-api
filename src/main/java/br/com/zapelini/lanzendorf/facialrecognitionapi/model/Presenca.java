@@ -28,4 +28,8 @@ public class Presenca {
     @JoinColumn(name = "id_aluno")
     private Aluno aluno;
 
+    public Presenca(Aula aula, Aluno aluno) {
+        this.aula = aula;
+        this.aluno = aluno;
+    }
 }
