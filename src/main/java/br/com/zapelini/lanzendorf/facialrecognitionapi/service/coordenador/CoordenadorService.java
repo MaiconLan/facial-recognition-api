@@ -8,6 +8,9 @@ import br.com.zapelini.lanzendorf.facialrecognitionapi.resource.coorednador.dto.
 import br.com.zapelini.lanzendorf.facialrecognitionapi.service.usuario.UsuarioService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
@@ -16,13 +19,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class CoordenadorService {
-    
+
     @Autowired
     private CoordenadorRepository coordenadorRepository;
 
     @Autowired
     private UsuarioService usuarioService;
-    
+
     public CoordenadorDTO criarCoordenador(CoordenadorDTO coordenadorDTO) throws NoSuchAlgorithmException, ApiException {
         Coordenador coordenador = new Coordenador(coordenadorDTO);
 
@@ -55,7 +58,21 @@ public class CoordenadorService {
         return new CoordenadorDTO(coordenador);
     }
 
-    public List<CoordenadorDTO> getCoordenadores() {
-        return coordenadorRepository.findAll().stream().map(CoordenadorDTO::new).collect(Collectors.toList());
+    public Page<CoordenadorDTO> filtrar(Pageable pageable, String nome, String email) {
+        List<CoordenadorDTO> coordenadores = coordenadorRepository.filter(pageable, nome, email)
+                .stream()
+                .map(CoordenadorDTO::new)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(coordenadores,
+                pageable,
+                coordenadorRepository.filterCount(nome, email)
+        );
     }
+
+    public void excluir(Long idCoordenador) throws ApiException {
+        Coordenador coordenador = getCoordenador(idCoordenador);
+        coordenadorRepository.delete(coordenador);
+    }
+
 }

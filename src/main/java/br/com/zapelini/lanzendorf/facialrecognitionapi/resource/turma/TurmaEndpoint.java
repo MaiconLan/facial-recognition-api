@@ -35,11 +35,12 @@ public class TurmaEndpoint {
 
     @GetMapping("/filtro")
     public ResponseEntity<Page<TurmaDTO>> filtrar(Pageable pageable,
+                                                  @RequestHeader Long idUsuario,
                                                   @PathParam("materia") String materia,
                                                   @PathParam("periodo") String periodo,
                                                   @PathParam("tipo") String tipo,
-                                                  @PathParam("finalizada") Boolean finalizada) {
-        Page<TurmaDTO> turmas = turmaService.filtrar(pageable, materia, periodo, tipo, finalizada);
+                                                  @PathParam("finalizada") Boolean finalizada) throws RecursoInexistenteException {
+        Page<TurmaDTO> turmas = turmaService.filtrar(pageable, idUsuario, materia, periodo, tipo, finalizada);
         return !turmas.isEmpty() ? ResponseEntity.ok(turmas) : ResponseEntity.noContent().build();
     }
 
